@@ -77,15 +77,16 @@ void RobotRescueGame::InitialiseGame() {
 
 	AddNewObject(testRobot);
 
+	//Random spawning of good and bad robots
 	for (int i = 0; i < 10; ++i) {
-		float randomX = 32.0f + (rand() % 416);
-		float randomY = 32.0f + (rand() % 256);
+		float randomX = 32.0f + (rand() % MAX_X);
+		float randomY = 32.0f + (rand() % MAX_Y);
 		AddEnemyRobot(Vector2(randomX, randomY));
 	}
 
 	for (int i = 0; i < 20; ++i) {
-		float randomX = 32.0f + (rand() % 416);
-		float randomY = 32.0f + (rand() % 256);
+		float randomX = 32.0f + (rand() % MAX_X);
+		float randomY = 32.0f + (rand() % MAX_Y);
 		AddCollectableRobot(Vector2(randomX, randomY));
 	}
 

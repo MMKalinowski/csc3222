@@ -15,6 +15,9 @@ namespace NCL {
 		class PlayerRobot;
 		class TextureManager;
 
+		const static unsigned int MAX_X = 416;
+		const static unsigned int MAX_Y = 256;
+
 		class RobotRescueGame {
 		public:
 			RobotRescueGame();
