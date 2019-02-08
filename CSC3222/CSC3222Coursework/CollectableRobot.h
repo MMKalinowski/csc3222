@@ -1,9 +1,12 @@
 #pragma once
 #include "SimObject.h"
 
-namespace NCL {
-	namespace CSC3222 {
-		enum RobotType {
+namespace NCL
+{
+	namespace CSC3222
+	{
+		enum RobotType
+		{
 			Score,
 			Speed,
 			Armour,
@@ -11,8 +14,9 @@ namespace NCL {
 			Special
 		};
 
-		class CollectableRobot : public SimObject {
-		public:
+		class CollectableRobot : public SimObject
+		{
+			public:
 			CollectableRobot();
 			CollectableRobot(RobotType type);
 			~CollectableRobot();
@@ -20,7 +24,7 @@ namespace NCL {
 			void DrawObject(GameSimsRenderer &r) override;
 			bool UpdateObject(float dt) override;
 
-		protected:
+			protected:
 			RobotType type;
 
 			bool	collected;

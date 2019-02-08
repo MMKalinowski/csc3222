@@ -32,17 +32,20 @@ Vector4 frames[16] = {
 	Vector4(1, 50, 15, 8)
 };
 
-Laser::Laser(Vector2& direction) : SimObject()	{
+Laser::Laser(Vector2& direction) : SimObject()
+{
 	texture = texManager->GetTexture("bullet.png");
 
 	velocity = direction;
 }
 
-Laser::~Laser()	{
+Laser::~Laser()
+{
 
 }
 
-void Laser::DrawObject(GameSimsRenderer &r) {
+void Laser::DrawObject(GameSimsRenderer &r)
+{
 	Vector2 screenPos = position;
 	Vector2 texPos;
 	Vector2 texSize = Vector2(16, 16);
@@ -53,7 +56,8 @@ void Laser::DrawObject(GameSimsRenderer &r) {
 
 	degrees += 180.0f;
 
-	if (degrees == 360.0f) {
+	if (degrees == 360.0f)
+	{
 		degrees = 0;
 	}
 
@@ -73,6 +77,9 @@ void Laser::DrawObject(GameSimsRenderer &r) {
 
 }
 
-bool Laser::UpdateObject(float dt) {
+bool Laser::UpdateObject(float dt)
+{
+
+
 	return true;
 }

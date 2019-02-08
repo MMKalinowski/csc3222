@@ -2,28 +2,34 @@
 #include "../../Common/Vector2.h"
 #include "RigidBody.h"
 
-namespace NCL {
+namespace NCL
+{
 	using namespace Maths;
-	namespace Rendering {
+	namespace Rendering
+	{
 		class TextureBase;
 	}
-	namespace CSC3222 {
+	namespace CSC3222
+	{
 		class GameSimsRenderer;
 		class TextureManager;
 		class RobotRescueGame;
 		class RigidBody;
 		class CollisionVolume;
 
-		class SimObject	: public RigidBody {
-		public:
+		class SimObject : public RigidBody
+		{
+			public:
 			SimObject();
 			~SimObject();
 
-			void SetCollider(CollisionVolume * c) {
+			void SetCollider(CollisionVolume * c)
+			{
 				collider = c;
 			}
 
-			CollisionVolume* GetCollider() const {
+			CollisionVolume* GetCollider() const
+			{
 				return collider;
 			}
 
@@ -33,7 +39,7 @@ namespace NCL {
 
 			static void InitObjects(RobotRescueGame* game, TextureManager* manager);
 
-		protected:
+			protected:
 			CollisionVolume*		collider;
 			Rendering::TextureBase* texture;
 

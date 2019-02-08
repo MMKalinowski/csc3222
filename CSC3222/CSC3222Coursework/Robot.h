@@ -1,17 +1,21 @@
 #pragma once
 #include "SimObject.h"
 
-namespace NCL {
-	namespace CSC3222 {	
-		class Robot :	public SimObject	{
-		public:
+namespace NCL
+{
+	namespace CSC3222
+	{
+		class Robot : public SimObject
+		{
+			public:
 			Robot();
 			~Robot();
 
 			void DrawObject(GameSimsRenderer &r) override;
 
-		protected:		
-			enum MovementDir {
+			protected:
+			enum MovementDir
+			{
 				Up,
 				Down,
 				Left,

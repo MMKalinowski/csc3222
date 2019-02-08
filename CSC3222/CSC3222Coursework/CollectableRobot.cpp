@@ -16,29 +16,35 @@ Vector4 spriteDetails[5] = {
 	Vector4(17 ,51 ,14, 13)
 };
 
-CollectableRobot::CollectableRobot() : SimObject()	{
+CollectableRobot::CollectableRobot() : SimObject()
+{
 	collected = false;
 
 	int r = rand() % 5;
 	type = (RobotType)r;
 
-	if (type == Special) {
+	if (type == Special)
+	{
 		texture = texManager->GetTexture("Green Bot Sprites.png");
 	}
-	else {
+	else
+	{
 		texture = texManager->GetTexture("Gum Bot Sprites.png");
 	}
 }
 
-CollectableRobot::CollectableRobot(RobotType type) : CollectableRobot() {
+CollectableRobot::CollectableRobot(RobotType type) : CollectableRobot()
+{
 	this->type = type;
 }
 
-CollectableRobot::~CollectableRobot()	{
+CollectableRobot::~CollectableRobot()
+{
 
 }
 
-void CollectableRobot::DrawObject(GameSimsRenderer &r) {
+void CollectableRobot::DrawObject(GameSimsRenderer &r)
+{
 	Vector2 texPos(spriteDetails[type].x, spriteDetails[type].y);
 	Vector2 texSize(spriteDetails[type].z, spriteDetails[type].w);
 
@@ -47,11 +53,14 @@ void CollectableRobot::DrawObject(GameSimsRenderer &r) {
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, false);
 }
 
-bool CollectableRobot::UpdateObject(float dt) {
-	if (collected) {
+bool CollectableRobot::UpdateObject(float dt)
+{
+	if (collected)
+	{
 		//they should follow the player!
 	}
-	else {
+	else
+	{
 		//they should just sit still
 	}
 	return true;

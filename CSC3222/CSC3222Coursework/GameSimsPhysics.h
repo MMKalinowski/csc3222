@@ -2,13 +2,16 @@
 #include <vector>
 #include "../../Common/Vector2.h"
 
-namespace NCL {
-	namespace CSC3222 {
+namespace NCL
+{
+	namespace CSC3222
+	{
 		class RigidBody;
 		class CollisionVolume;
 
-		class GameSimsPhysics	{
-		public:
+		class GameSimsPhysics
+		{
+			public:
 			GameSimsPhysics();
 			~GameSimsPhysics();
 
@@ -20,7 +23,7 @@ namespace NCL {
 			void AddCollider(CollisionVolume* c);
 			void RemoveCollider(CollisionVolume* c);
 
-		protected:
+			protected:
 			void Integration(float dt);
 			void CollisionDetection(float dt);
 

@@ -14,23 +14,50 @@
 using namespace NCL;
 using namespace CSC3222;
 
-RobotRescueGame::RobotRescueGame()	{
-	renderer	= new GameSimsRenderer();
-	texManager	= new TextureManager();
-	physics		= new GameSimsPhysics();
+int RobotRescueGame::robotCount = 0;
+
+RobotRescueGame::RobotRescueGame()
+{
+	renderer = new GameSimsRenderer();
+	texManager = new TextureManager();
+	physics = new GameSimsPhysics();
 	SimObject::InitObjects(this, texManager);
 	InitialiseGame();
 }
 
-RobotRescueGame::~RobotRescueGame()	{
+RobotRescueGame::~RobotRescueGame()
+{
 	delete currentMap;
 	delete texManager;
 	delete renderer;
 	delete physics;
 }
 
-void RobotRescueGame::Update(float dt) {
-	for (auto i : newObjects) {
+void RobotRescueGame::Update(const float dt)
+{
+	spawnTimer += dt;
+	
+	// move to function!
+	//BEGIN
+	if (spawnTimer >= spawnDelay)
+	{
+		enemyRobotSpawn = true;
+		spawnTimer = 0.0f;
+	}
+
+	if (enemyRobotSpawn && robotCount < maxEnemies)
+	{
+		std::cout << "t: " + std::to_string(gameTime) << std::endl;
+		float randomX = 32.0f + (rand() % MAX_X);
+		float randomY = 32.0f + (rand() % MAX_Y);
+		AddEnemyRobot(Vector2(randomX, randomY));
+		robotCount++;
+		enemyRobotSpawn = !enemyRobotSpawn;
+	}
+	//END
+
+	for (auto i : newObjects)
+	{
 		gameObjects.emplace_back(i);
 	}
 	newObjects.clear();
@@ -43,12 +70,15 @@ void RobotRescueGame::Update(float dt) {
 
 	srand((int)(gameTime * 1000.0f));
 
-	for (auto i = gameObjects.begin(); i != gameObjects.end(); ) {
-		if (!(*i)->UpdateObject(dt)) { //object has said its finished with
+	for (auto i = gameObjects.begin(); i != gameObjects.end(); )
+	{
+		if (!(*i)->UpdateObject(dt))
+		{ //object has said its finished with
 			delete (*i);
 			i = gameObjects.erase(i);
 		}
-		else {
+		else
+		{
 			(*i)->DrawObject(*renderer);
 			++i;
 		}
@@ -62,9 +92,11 @@ void RobotRescueGame::Update(float dt) {
 	renderer->Render();
 }
 
-void RobotRescueGame::InitialiseGame() {
+void RobotRescueGame::InitialiseGame()
+{
 	delete currentMap;
-	for (auto o : gameObjects) {
+	for (auto o : gameObjects)
+	{
 		delete o;
 	}
 	gameObjects.clear();
@@ -77,33 +109,36 @@ void RobotRescueGame::InitialiseGame() {
 
 	AddNewObject(testRobot);
 
-	//Random spawning of good and bad robots
-	for (int i = 0; i < 10; ++i) {
-		float randomX = 32.0f + (rand() % MAX_X);
-		float randomY = 32.0f + (rand() % MAX_Y);
-		AddEnemyRobot(Vector2(randomX, randomY));
-	}
+	////Random spawning of good and bad robots
+	//for (int i = 0; i < 10; ++i) {
+	//	float randomX = 32.0f + (rand() % MAX_X);
+	//	float randomY = 32.0f + (rand() % MAX_Y);
+	//	AddEnemyRobot(Vector2(randomX, randomY));
+	//}
 
-	for (int i = 0; i < 20; ++i) {
-		float randomX = 32.0f + (rand() % MAX_X);
-		float randomY = 32.0f + (rand() % MAX_Y);
-		AddCollectableRobot(Vector2(randomX, randomY));
-	}
+	//for (int i = 0; i < 20; ++i) {
+	//	float randomX = 32.0f + (rand() % MAX_X);
+	//	float randomY = 32.0f + (rand() % MAX_Y);
+	//	AddCollectableRobot(Vector2(randomX, randomY));
+	//}
 
-	gameTime		= 0;
-	currentScore	= 0;
-	lives			= 3;
+	gameTime = 0;
+	currentScore = 0;
+	lives = 3;
 }
 
-void RobotRescueGame::AddNewObject(SimObject* object) {
+void RobotRescueGame::AddNewObject(SimObject* object)
+{
 	newObjects.emplace_back(object);
 	physics->AddRigidBody(object);
-	if (object->GetCollider()) {
+	if (object->GetCollider())
+	{
 		physics->AddCollider(object->GetCollider());
 	}
 }
 
-void RobotRescueGame::AddEnemyRobot(const Vector2& position) {
+void RobotRescueGame::AddEnemyRobot(const Vector2& position)
+{
 	EnemyRobot* robot = new EnemyRobot();
 
 	robot->SetPosition(position);
@@ -111,7 +146,8 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position) {
 	AddNewObject(robot);
 }
 
-void RobotRescueGame::AddCollectableRobot(const Vector2& position) {
+void RobotRescueGame::AddCollectableRobot(const Vector2& position)
+{
 	CollectableRobot* robot = new CollectableRobot();
 
 	robot->SetPosition(position);

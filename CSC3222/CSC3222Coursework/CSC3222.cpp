@@ -6,31 +6,38 @@
 using namespace NCL;
 using namespace CSC3222;
 
-int main() {
+int main()
+{
 	Window*w = Window::CreateGameWindow("CSC3222 - Robot Rescue!", 1120, 768);
 
-	if (!w->HasInitialised()) {
+	if (!w->HasInitialised())
+	{
 		return -1;
 	}
 
 	RobotRescueGame* robotGame = new RobotRescueGame();
 
-	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)) {
+	while (w->UpdateWindow() && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE))
+	{
 		float time = w->GetTimer()->GetTimeDelta();
 
 		robotGame->Update(time / 1000.0f);
 
-		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_PRIOR)) {
+		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_PRIOR))
+		{
 			w->ShowConsole(true);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_NEXT)) {
+		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_NEXT))
+		{
 			w->ShowConsole(false);
 		}
 
-		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_HOME)) {
+		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_HOME))
+		{
 			w->SetFullScreen(true);
 		}
-		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_END)) {
+		if (Window::GetKeyboard()->KeyPressed(KEYBOARD_END))
+		{
 			w->SetFullScreen(false);
 		}
 

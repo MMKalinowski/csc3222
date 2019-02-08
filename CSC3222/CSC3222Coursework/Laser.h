@@ -1,10 +1,13 @@
 #pragma once
 #include "SimObject.h"
 
-namespace NCL {
-	namespace CSC3222 {
-		class Laser : public SimObject {
-		public:
+namespace NCL
+{
+	namespace CSC3222
+	{
+		class Laser : public SimObject
+		{
+			public:
 			Laser(Vector2& direction);
 			~Laser();
 

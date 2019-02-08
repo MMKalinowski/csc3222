@@ -3,12 +3,14 @@
 using namespace NCL;
 using namespace CSC3222;
 
-RigidBody::RigidBody()	{
+RigidBody::RigidBody()
+{
 	inverseMass = 1.0f;
-	elasticity  = 0.5f;
+	elasticity = 0.5f;
 }
 
 
-RigidBody::~RigidBody()	{
+RigidBody::~RigidBody()
+{
 
 }

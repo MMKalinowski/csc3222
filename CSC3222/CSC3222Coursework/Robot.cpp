@@ -6,18 +6,21 @@ using namespace CSC3222;
 
 int  startY[] = { 0,32,64,64 };
 int  startX[] = { 0,16,32,48 };
-bool flips[]  = { false,false,false,true };
+bool flips[] = { false,false,false,true };
 
-Robot::Robot() : SimObject()	{
-	currentAnimDir		= Left;
-	currentanimFrame	= 0;
+Robot::Robot() : SimObject()
+{
+	currentAnimDir = Left;
+	currentanimFrame = 0;
 }
 
-Robot::~Robot()	{
+Robot::~Robot()
+{
 
 }
 
-void Robot::DrawObject(GameSimsRenderer &r) {
+void Robot::DrawObject(GameSimsRenderer &r)
+{
 	//determine frame of anim to play, and whether its flipped or not
 
 	Vector2 screenPos = position;
@@ -33,10 +36,12 @@ void Robot::DrawObject(GameSimsRenderer &r) {
 
 }
 
-void Robot::UpdateAnimFrame(float dt) {
+void Robot::UpdateAnimFrame(float dt)
+{
 	frameTime -= dt;
 
-	if (frameTime < 0) {
+	if (frameTime < 0)
+	{
 		currentanimFrame = (currentanimFrame + 1) % 4;
 		frameTime += 1.0f / 12.0f;
 	}
