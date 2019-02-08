@@ -78,8 +78,8 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 		mapFile >> yTile;
 
 		structureData[i].structureType = (MapStructureType)type;
-		structureData[i].startPos.x = xTile * 16;
-		structureData[i].startPos.y = yTile * 16;
+		structureData[i].startPos.x = float(xTile * 16); //explicit type conversion
+		structureData[i].startPos.y = float(yTile * 16); //explicit type conversion
 	}
 }
 
@@ -116,7 +116,7 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 			Vector2 texPos = Vector2(tileData.x, tileData.y);
 			Vector2 texSize = Vector2(tileData.z, tileData.w);
 
-			Vector2 screenPos = Vector2(x * 16, y * 16);
+			Vector2 screenPos = Vector2(float(x * 16), float(y * 16)); //explicit type conversion
 
 			r.DrawTextureArea((OGLTexture*)tileTexture, texPos, texSize, screenPos, false);
 		}

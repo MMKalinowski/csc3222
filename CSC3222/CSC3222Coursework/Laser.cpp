@@ -40,9 +40,7 @@ Laser::Laser(Vector2& direction) : SimObject()
 }
 
 Laser::~Laser()
-{
-
-}
+{}
 
 void Laser::DrawObject(GameSimsRenderer &r)
 {
@@ -77,9 +75,12 @@ void Laser::DrawObject(GameSimsRenderer &r)
 
 }
 
-bool Laser::UpdateObject(float dt)
+bool Laser::UpdateObject(const float dt)
 {
-
+	Vector2 currentVel = this->GetVelocity();
+	currentVel = (currentVel.x > 0 && currentVel.y > 0) ? currentVel : Vector2{2.0f, 0};
+	Vector2 nextPosition = this->GetPosition() + (this->GetVelocity() * dt);
+	this->SetPosition(nextPosition);
 
 	return true;
 }
