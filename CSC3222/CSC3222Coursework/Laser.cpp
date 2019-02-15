@@ -87,4 +87,5 @@ bool Laser::UpdateObject(const float dt)
 	this->SetPosition(nextPosition);
 
 	return true;
+	//test
 }
