@@ -47,10 +47,16 @@ void RobotRescueGame::Update(const float dt)
 
 	if (enemyRobotSpawn && robotCount < maxEnemies)
 	{
-		std::cout << "t: " + std::to_string(gameTime) << std::endl;
-		float randomX = 32.0f + (rand() % MAX_X);
-		float randomY = 32.0f + (rand() % MAX_Y);
-		AddEnemyRobot(Vector2(randomX, randomY));
+		//std::cout << "t: " + std::to_string(gameTime) << std::endl;
+		float spawnX = MAX_X - 5.0f + 0;
+		float spawnY = MAX_Y - 5.0f + 0;
+
+		float spawnTopX = MAX_X/1.25f;
+		float spawnTopY = MAX_Y/4.3f;
+		
+		(rand() % 2 == 0) ? AddEnemyRobot(Vector2(spawnX, spawnY)) 
+			: AddEnemyRobot(Vector2(spawnTopX, spawnTopY));
+		
 		robotCount++;
 		enemyRobotSpawn = !enemyRobotSpawn;
 	}
@@ -116,11 +122,12 @@ void RobotRescueGame::InitialiseGame()
 	//	AddEnemyRobot(Vector2(randomX, randomY));
 	//}
 
-	//for (int i = 0; i < 20; ++i) {
-	//	float randomX = 32.0f + (rand() % MAX_X);
-	//	float randomY = 32.0f + (rand() % MAX_Y);
-	//	AddCollectableRobot(Vector2(randomX, randomY));
-	//}
+	for (int i = 0; i < 20; ++i)
+	{
+		float randomX = 32.0f + (rand() % MAX_X);
+		float randomY = 32.0f + (rand() % MAX_Y);
+		AddCollectableRobot(Vector2(randomX, randomY));
+	}
 
 	gameTime = 0;
 	currentScore = 0;
