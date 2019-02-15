@@ -37,6 +37,9 @@ Laser::Laser(Vector2& direction) : SimObject()
 	texture = texManager->GetTexture("bullet.png");
 
 	velocity = direction;
+	std::cout << velocity << " before norm";
+	velocity.Normalize(); //look in Vector2.h for implementation
+	std::cout << velocity << " after norm";
 }
 
 Laser::~Laser()
@@ -62,7 +65,7 @@ void Laser::DrawObject(GameSimsRenderer &r)
 	degrees /= 360.0f;
 	degrees *= 16.0f;
 
-	int frame = (int)degrees;
+	int frame = degrees;
 
 	texPos.x = frames[frame].x;
 	texPos.y = frames[frame].y;
@@ -78,10 +81,10 @@ void Laser::DrawObject(GameSimsRenderer &r)
 bool Laser::UpdateObject(const float dt)
 {
 	//clean up the CODE
-	/*Vector2 currentVel = this->GetVelocity();
-	currentVel = (currentVel.x != 0 || currentVel.y != 0) ? currentVel : Vector2{150.0f, 0};
-	Vector2 nextPosition = this->GetPosition() + (currentVel * dt);
-	this->SetPosition(nextPosition);*/
+	Vector2 currentVel = this->GetVelocity();
+	currentVel = (currentVel.x != 0 || currentVel.y != 0) ? currentVel : Vector2{1.0f, .0f};
+	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
+	this->SetPosition(nextPosition);
 
 	return true;
 }

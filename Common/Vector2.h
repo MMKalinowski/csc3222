@@ -14,6 +14,7 @@ _-_-_-_-_-_-_-""  ""
 *//////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <iostream>
+#include <cmath>
 
 namespace NCL {
 	namespace Maths {
@@ -37,6 +38,13 @@ namespace NCL {
 			void ToZero() {
 				x = 0.0f;
 				y = 0.0f;
+			}
+
+			void Normalize()
+			{
+				float length = std::sqrtf((x*x) + (y*y));
+				x /= length;
+				y /= length;
 			}
 
 			inline friend std::ostream& operator<<(std::ostream& o, const Vector2& v) {

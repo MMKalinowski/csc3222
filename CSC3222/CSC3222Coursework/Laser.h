@@ -13,6 +13,9 @@ namespace NCL
 
 			void DrawObject(GameSimsRenderer &r) override;
 			bool UpdateObject(float dt) override;
+
+			private:
+			float SPEED = 125;
 		};
 	}
 }
