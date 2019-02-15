@@ -27,6 +27,9 @@ namespace NCL
 			void Integration(float dt);
 			void CollisionDetection(float dt);
 
+			float timeUntilUpdate = 0;
+			const float subDT = 1.0 / 120;
+
 			std::vector<RigidBody*>			allBodies;
 			std::vector<CollisionVolume*>	allColliders;
 		};

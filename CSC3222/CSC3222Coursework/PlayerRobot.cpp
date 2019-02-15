@@ -23,6 +23,7 @@ PlayerRobot::~PlayerRobot()
 bool PlayerRobot::UpdateObject(float dt)
 {
 	float testSpeed = 64;
+	float testAccel = 25;
 
 	Vector2 newVelocity;
 
@@ -31,35 +32,43 @@ bool PlayerRobot::UpdateObject(float dt)
 		currentAnimDir = MovementDir::Left;
 		UpdateAnimFrame(dt);
 
-		newVelocity.x = -testSpeed * dt;
+		//newVelocity.x = -testSpeed * dt;
+		this->AddForce(Vector2{-testAccel/this->inverseMass, 0});
+		
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_RIGHT))
 	{
 		currentAnimDir = MovementDir::Right;
 		UpdateAnimFrame(dt);
 
-		newVelocity.x = testSpeed * dt;
+		//newVelocity.x = testSpeed * dt;
+		this->AddForce(Vector2{ testAccel / this->inverseMass, 0 });
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_UP))
 	{
 		currentAnimDir = MovementDir::Up;
 		UpdateAnimFrame(dt);
 
-		newVelocity.y = -testSpeed * dt;
+		//newVelocity.y = -testSpeed * dt;
+		this->AddForce(Vector2{ 0, -testAccel / this->inverseMass });
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_DOWN))
 	{
 		currentAnimDir = MovementDir::Down;
 		UpdateAnimFrame(dt);
 
-		newVelocity.y = testSpeed * dt;
+		//newVelocity.y = testSpeed * dt;
+		this->AddForce(Vector2{ 0, testAccel / this->inverseMass });
 	}
 
-	position += newVelocity;
+	//position += newVelocity;
+	//newVelocity = this->velocity + (this->force * this->inverseMass) * dt;
+	//this->SetPosition(this->GetPosition() + newVelocity * dt);
 
 	if (Window::GetKeyboard()->KeyPressed(KEYBOARD_CONTROL))
 	{
-		Vector2 laserSpeed = newVelocity * 150.0f;
+		newVelocity.Normalize();
+		Vector2 laserSpeed = newVelocity;
 		Laser* shot = new Laser(laserSpeed);
 		shot->SetPosition(position + Vector2(8, 16));
 

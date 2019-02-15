@@ -112,15 +112,7 @@ void RobotRescueGame::InitialiseGame()
 	renderer->SetScreenProperties(16, currentMap->GetMapWidth(), currentMap->GetMapHeight());
 
 	testRobot = new PlayerRobot();
-
 	AddNewObject(testRobot);
-
-	////Random spawning of good and bad robots
-	//for (int i = 0; i < 10; ++i) {
-	//	float randomX = 32.0f + (rand() % MAX_X);
-	//	float randomY = 32.0f + (rand() % MAX_Y);
-	//	AddEnemyRobot(Vector2(randomX, randomY));
-	//}
 
 	for (int i = 0; i < 20; ++i)
 	{
