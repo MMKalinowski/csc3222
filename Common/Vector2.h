@@ -42,6 +42,9 @@ namespace NCL {
 
 			void Normalize()
 			{
+				if (x == 0 && y == 0)
+					return;
+
 				float length = std::sqrtf((x*x) + (y*y));
 				x /= length;
 				y /= length;

@@ -83,6 +83,10 @@ bool Laser::UpdateObject(const float dt)
 	//clean up the CODE
 	Vector2 currentVel = this->GetVelocity();
 	currentVel = (currentVel.x != 0 || currentVel.y != 0) ? currentVel : Vector2{1.0f, .0f};
+	
+	if (currentVel.x == 0 && currentVel.y == 0)
+		std::cout << std::endl << "ZERO IS ZERO";
+	
 	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
 	this->SetPosition(nextPosition);
 
