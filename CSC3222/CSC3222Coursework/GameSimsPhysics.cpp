@@ -16,7 +16,7 @@ GameSimsPhysics::~GameSimsPhysics()
 
 }
 
-void GameSimsPhysics::Update(float dt)
+void GameSimsPhysics::Update(const float dt)
 {
 	timeUntilUpdate += dt;
 	
@@ -62,17 +62,21 @@ void GameSimsPhysics::RemoveCollider(CollisionVolume* c)
 	}
 }
 
-void GameSimsPhysics::Integration(float dt)
+void GameSimsPhysics::Integration(const float dt)
 {
 	for (auto obj : allBodies)
 	{
 		Vector2 accel = obj->force * obj->inverseMass;
-		obj->SetVelocity(accel * dt * 0.999f);
+		obj->SetVelocity(accel + (accel * dt * 0.999f));
 		obj->SetPosition(obj->GetPosition() + obj->GetVelocity() * dt);
+
+		////Reset force
+		//obj->force = Vector2{ 0, 0 };
+
 	}
 }
 
-void GameSimsPhysics::CollisionDetection(float dt)
+void GameSimsPhysics::CollisionDetection(const float dt)
 {
 
 }

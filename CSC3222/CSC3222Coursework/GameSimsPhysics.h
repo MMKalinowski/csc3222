@@ -15,7 +15,7 @@ namespace NCL
 			GameSimsPhysics();
 			~GameSimsPhysics();
 
-			void Update(float dt);
+			void Update(const float dt);
 
 			void AddRigidBody(RigidBody* b);
 			void RemoveRigidBody(RigidBody* b);
@@ -24,8 +24,8 @@ namespace NCL
 			void RemoveCollider(CollisionVolume* c);
 
 			protected:
-			void Integration(float dt);
-			void CollisionDetection(float dt);
+			void Integration(const float dt);
+			void CollisionDetection(const float dt);
 
 			float timeUntilUpdate = 0;
 			const float subDT = 1.0 / 120;
