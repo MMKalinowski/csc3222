@@ -70,8 +70,8 @@ void GameSimsPhysics::Integration(const float dt)
 		obj->SetVelocity(accel + (accel * dt * 0.999f));
 		obj->SetPosition(obj->GetPosition() + obj->GetVelocity() * dt);
 
-		////Reset force
-		//obj->force = Vector2{ 0, 0 };
+		//Reset force
+		obj->force.ToZero();
 
 	}
 }

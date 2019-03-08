@@ -35,11 +35,14 @@ Vector4 frames[16] = {
 Laser::Laser(Vector2& direction) : SimObject()
 {
 	texture = texManager->GetTexture("bullet.png");
+	
+	velocity = (direction.x != 0 || direction.y != 0) ? direction : Vector2{ 1.0f, .0f };
+	dir = velocity;
+	std::cout << dir << std::endl;
 
-	velocity = direction;
-	std::cout << velocity << " before norm";
-	velocity.Normalize(); //look in Vector2.h for implementation
-	std::cout << velocity << " after norm";
+	inverseMass = 1.f / float(rand() % 5 + 1); //randomisation for physics test
+	std::cout << 1.f / inverseMass << std::endl;
+	//inverseMass = 1.0f;
 }
 
 Laser::~Laser()
@@ -85,6 +88,8 @@ bool Laser::UpdateObject(const float dt)
 	
 	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
 	this->SetPosition(nextPosition);*/
+
+	this->AddForce(dir * SPEED / inverseMass);
 
 	return true;
 }

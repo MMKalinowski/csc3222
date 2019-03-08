@@ -25,14 +25,14 @@ bool PlayerRobot::UpdateObject(float dt)
 	float testSpeed = 64;
 	float testAccel = 25;
 
-	Vector2 newVelocity;
+	Vector2 laserDir;
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_LEFT))
 	{
 		currentAnimDir = MovementDir::Left;
 		UpdateAnimFrame(dt);
 
-		//newVelocity.x = -testSpeed * dt;
+		laserDir.x = -testSpeed * dt;
 		this->AddForce(Vector2{-testAccel/this->inverseMass, 0});
 		
 	}
@@ -41,7 +41,7 @@ bool PlayerRobot::UpdateObject(float dt)
 		currentAnimDir = MovementDir::Right;
 		UpdateAnimFrame(dt);
 
-		//newVelocity.x = testSpeed * dt;
+		laserDir.x = testSpeed * dt;
 		this->AddForce(Vector2{ testAccel / this->inverseMass, 0 });
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_UP))
@@ -49,7 +49,7 @@ bool PlayerRobot::UpdateObject(float dt)
 		currentAnimDir = MovementDir::Up;
 		UpdateAnimFrame(dt);
 
-		//newVelocity.y = -testSpeed * dt;
+		laserDir.y = -testSpeed * dt;
 		this->AddForce(Vector2{ 0, -testAccel / this->inverseMass });
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_DOWN))
@@ -57,22 +57,19 @@ bool PlayerRobot::UpdateObject(float dt)
 		currentAnimDir = MovementDir::Down;
 		UpdateAnimFrame(dt);
 
-		//newVelocity.y = testSpeed * dt;
+		laserDir.y = testSpeed * dt;
 		this->AddForce(Vector2{ 0, testAccel / this->inverseMass });
 	}
 
-	//position += newVelocity;
-	//newVelocity = this->velocity + (this->force * this->inverseMass) * dt;
-	//this->SetPosition(this->GetPosition() + newVelocity * dt);
-
+	//TODO: hotfix bug when pressing Ctrl fast a one-frame jerk of already existing lasers
 	if (Window::GetKeyboard()->KeyPressed(KEYBOARD_CONTROL))
 	{
-		newVelocity.Normalize();
-		Vector2 laserSpeed = newVelocity;
-		Laser* shot = new Laser(laserSpeed);
+		laserDir.Normalize();
+		Laser* shot = new Laser(laserDir);
 		shot->SetPosition(position + Vector2(8, 16));
 
 		game->AddNewObject(shot);
+		laserDir.ToZero();
 	}
 
 	return true;

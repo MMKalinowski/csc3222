@@ -45,9 +45,14 @@ namespace NCL {
 				if (x == 0 && y == 0)
 					return;
 
-				float length = std::sqrtf((x*x) + (y*y));
+				float length = Length();
 				x /= length;
 				y /= length;
+			}
+
+			float Length()
+			{
+				return std::sqrtf((x*x) + (y*y));
 			}
 
 			inline friend std::ostream& operator<<(std::ostream& o, const Vector2& v) {
