@@ -24,8 +24,11 @@ namespace NCL
 			void RemoveCollider(CollisionVolume* c);
 
 			protected:
-			void Integration(const float dt);
+			//void Integration(const float dt);
+			void IntegrateAccel(const float dt);
+			void IntegrateVel(const float dt);
 			void CollisionDetection(const float dt);
+			bool CheckCollision(CollisionVolume* l, CollisionVolume* r);
 
 			float timeUntilUpdate = 0;
 			const float subDT = 1.0 / 120;

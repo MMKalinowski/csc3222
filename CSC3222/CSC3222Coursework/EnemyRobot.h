@@ -17,6 +17,8 @@ namespace NCL
 			protected:
 			float	thinkTime;
 			bool	moving;
+			float	testSpeed = 6;
+			Vector2 direction;
 		};
 	}
 }

@@ -107,7 +107,7 @@ void RobotRescueGame::InitialiseGame()
 	}
 	gameObjects.clear();
 
-	currentMap = new GameMap("GameSimsRobotMap.txt", gameObjects, *texManager);
+	currentMap = new GameMap("GameSimsRobotMap.txt", gameObjects, *texManager, physics);
 
 	renderer->SetScreenProperties(16, currentMap->GetMapWidth(), currentMap->GetMapHeight());
 

@@ -13,6 +13,8 @@ PlayerRobot::PlayerRobot() : Robot()
 	texture = texManager->GetTexture("Turret Bot.png");
 
 	position = Vector2(32, 32);
+
+	this->inverseMass = 5;
 }
 
 PlayerRobot::~PlayerRobot()
@@ -22,8 +24,7 @@ PlayerRobot::~PlayerRobot()
 
 bool PlayerRobot::UpdateObject(float dt)
 {
-	float testSpeed = 64;
-	float testAccel = 25;
+	float testSpeed = 40;
 
 	Vector2 laserDir;
 
@@ -33,7 +34,7 @@ bool PlayerRobot::UpdateObject(float dt)
 		UpdateAnimFrame(dt);
 
 		laserDir.x = -testSpeed * dt;
-		this->AddForce(Vector2{-testAccel/this->inverseMass, 0});
+		/*this->AddForce(Vector2{-testAccel/this->inverseMass, 0});*/
 		
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_RIGHT))
@@ -42,7 +43,7 @@ bool PlayerRobot::UpdateObject(float dt)
 		UpdateAnimFrame(dt);
 
 		laserDir.x = testSpeed * dt;
-		this->AddForce(Vector2{ testAccel / this->inverseMass, 0 });
+		/*this->AddForce(Vector2{ testAccel / this->inverseMass, 0 });*/
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_UP))
 	{
@@ -50,7 +51,7 @@ bool PlayerRobot::UpdateObject(float dt)
 		UpdateAnimFrame(dt);
 
 		laserDir.y = -testSpeed * dt;
-		this->AddForce(Vector2{ 0, -testAccel / this->inverseMass });
+		/*this->AddForce(Vector2{ 0, -testAccel / this->inverseMass });*/
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_DOWN))
 	{
@@ -58,8 +59,10 @@ bool PlayerRobot::UpdateObject(float dt)
 		UpdateAnimFrame(dt);
 
 		laserDir.y = testSpeed * dt;
-		this->AddForce(Vector2{ 0, testAccel / this->inverseMass });
+		/*this->AddForce(Vector2{ 0, testAccel / this->inverseMass });*/
 	}
+
+	this->AddForce(laserDir * testSpeed);
 
 	//TODO: hotfix bug when pressing Ctrl fast a one-frame jerk of already existing lasers
 	if (Window::GetKeyboard()->KeyPressed(KEYBOARD_CONTROL))

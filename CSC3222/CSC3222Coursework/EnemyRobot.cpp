@@ -10,6 +10,10 @@ EnemyRobot::EnemyRobot() : Robot()
 	texture = texManager->GetTexture("Turret Bot overgrown.png");
 
 	moving = false;
+
+	this->inverseMass = 2.5;
+
+	direction = Vector2();
 }
 
 EnemyRobot::~EnemyRobot()
@@ -21,46 +25,45 @@ bool EnemyRobot::UpdateObject(float dt)
 
 	if (moving)
 	{
-		position += velocity * dt;
+		//position += direction * dt;
+		this->AddForce(direction * this->testSpeed);
 		UpdateAnimFrame(dt);
 	}
 
 	if (thinkTime < 0)
 	{
 		moving = false;
-		velocity = Vector2();
+		direction = Vector2();
 
 		thinkTime += 0.5f;
-
-		float testSpeed = 16;
 
 		int choice = rand() % 5;
 
 		if (choice == 1)
 		{
 			moving = true;
-			velocity.x = -testSpeed;
+			direction.x = -testSpeed;
 			currentAnimDir = MovementDir::Left;
 		}
 
 		if (choice == 2)
 		{
 			moving = true;
-			velocity.x = testSpeed;
+			direction.x = testSpeed;
 			currentAnimDir = MovementDir::Right;
 		}
 
 		if (choice == 3)
 		{
 			moving = true;
-			velocity.y = -testSpeed;
+			direction.y = -testSpeed;
 			currentAnimDir = MovementDir::Up;
 		}
 
 		if (choice == 4)
 		{
 			moving = true;
-			velocity.y = testSpeed;
+			direction.y = testSpeed;
 			currentAnimDir = MovementDir::Down;
 		}
 	}

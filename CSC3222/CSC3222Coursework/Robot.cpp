@@ -33,7 +33,7 @@ void Robot::DrawObject(GameSimsRenderer &r)
 	texPos.y = startY[currentAnimDir];
 
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, flips[currentAnimDir]);
-
+	r.DrawCircle(screenPos, texSize.x);
 }
 
 void Robot::UpdateAnimFrame(float dt)
