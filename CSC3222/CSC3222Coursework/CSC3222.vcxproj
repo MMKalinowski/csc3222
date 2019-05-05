@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CircleCollisionVolume.cpp" />
     <ClCompile Include="CollectableRobot.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
     <ClCompile Include="CSC3222.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="GameSimsRenderer.cpp" />
     <ClCompile Include="Laser.cpp" />
     <ClCompile Include="PlayerRobot.cpp" />
+    <ClCompile Include="RectangleCollisionVolume.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="RobotRescueGame.cpp" />
@@ -156,6 +158,7 @@
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircleCollisionVolume.h" />
     <ClInclude Include="CollectableRobot.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="EnemyRobot.h" />
@@ -164,6 +167,7 @@
     <ClInclude Include="GameSimsRenderer.h" />
     <ClInclude Include="Laser.h" />
     <ClInclude Include="PlayerRobot.h" />
+    <ClInclude Include="RectangleCollisionVolume.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="RobotRescueGame.h" />

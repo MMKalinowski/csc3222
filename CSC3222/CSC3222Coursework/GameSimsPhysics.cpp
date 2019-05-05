@@ -1,6 +1,8 @@
 #include "GameSimsPhysics.h"
 #include "RigidBody.h"
 #include "CollisionVolume.h"
+#include "CircleCollisionVolume.h"
+#include "RectangleCollisionVolume.h"
 #include "../../Common/Vector2.h"
 
 using namespace NCL;
@@ -94,5 +96,36 @@ void GameSimsPhysics::CollisionDetection(const float dt)
 
 bool GameSimsPhysics::CheckCollision(CollisionVolume* l, CollisionVolume* r)
 {
+	if (l->getType() == r->getType())
+	{
+		if (l->getType() == 2)
+		{
+			CircleCollisionVolume* left = static_cast<CircleCollisionVolume*>(l);
+			CircleCollisionVolume* right = static_cast<CircleCollisionVolume*>(r);
+		}
+		else
+		{
+
+		}
+	}
+	else
+	{
+
+	}
+
 	return false;
+}
+
+bool CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
+{
+	int radiusL = l->getRadius();
+	int radiusR = r->getRadius();
+	Vector2 posL = l->getPosition();
+	Vector2 posR = r->getPosition();
+
+	if (pow((posR.x - posL.x), 2) + pow((posL.y - posR.y), 2) <= pow((radiusL + radiusR), 2))
+	{
+		std::cout << "COLLISION!!! DETAILS:\nRadius l: " <<
+			radiusL << "\nPosition l: " << posL << std::endl;
+	}
 }

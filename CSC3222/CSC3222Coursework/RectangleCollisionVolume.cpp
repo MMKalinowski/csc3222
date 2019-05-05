@@ -4,11 +4,12 @@
 using namespace NCL;
 using namespace CSC3222;
 
-RectangleCollisionVolume::RectangleCollisionVolume(int offset, int x, int y) : CollisionVolume()
+RectangleCollisionVolume::RectangleCollisionVolume(Vector2 offset, int x, int y) : CollisionVolume()
 {
 	this->x_size = x;
 	this->y_size = y;
 	this->offset = offset;
+	this->type = 1;
 }
 RectangleCollisionVolume::~RectangleCollisionVolume()
 {

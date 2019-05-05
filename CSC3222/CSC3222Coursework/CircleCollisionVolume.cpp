@@ -4,10 +4,11 @@
 using namespace NCL;
 using namespace CSC3222;
 
-CircleCollisionVolume::CircleCollisionVolume(int offset, int radius) : CollisionVolume()
+CircleCollisionVolume::CircleCollisionVolume(Vector2 position, Vector2 offset, int radius) : CollisionVolume()
 {
 	this->radius = radius;
-	this->offset = offset;
+	this->position = position + offset;
+	this->type = 2;
 }
 CircleCollisionVolume::~CircleCollisionVolume()
 {

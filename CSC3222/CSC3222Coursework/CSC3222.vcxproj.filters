@@ -66,6 +66,12 @@
     <ClCompile Include="CollisionVolume.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="CircleCollisionVolume.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleCollisionVolume.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMap.h">
@@ -105,6 +111,12 @@
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="CollisionVolume.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleCollisionVolume.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleCollisionVolume.h">
       <Filter>Physics</Filter>
     </ClInclude>
   </ItemGroup>

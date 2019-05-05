@@ -141,6 +141,7 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 	EnemyRobot* robot = new EnemyRobot();
 
 	robot->SetPosition(position);
+	//robot->SetCollider(new )
 
 	AddNewObject(robot);
 }

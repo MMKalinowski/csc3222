@@ -8,6 +8,11 @@ namespace NCL
 			public:
 			CollisionVolume();
 			~CollisionVolume();
+
+			int getType() { return type; }
+
+			protected:
+			int type = 0;
 		};
 	}
 }
