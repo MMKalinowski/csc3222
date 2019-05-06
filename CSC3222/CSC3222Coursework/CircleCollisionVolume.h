@@ -14,11 +14,10 @@ namespace NCL
 			~CircleCollisionVolume();
 
 			int getRadius() { return radius; }
-			Vector2 getPosition() { return position; }
+			Vector2 getPosition() override { return position; }
 
 			private:
 			int radius;
-			Vector2 position;
 		};
 	}
 }

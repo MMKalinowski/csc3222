@@ -1,8 +1,11 @@
 #include "Robot.h"
 #include "GameSimsRenderer.h"
+#include "CollisionVolume.h"
+#include "RectangleCollisionVolume.h"
 
 using namespace NCL;
 using namespace CSC3222;
+using namespace Maths;
 
 int  startY[] = { 0,32,64,64 };
 int  startX[] = { 0,16,32,48 };
@@ -29,11 +32,20 @@ void Robot::DrawObject(GameSimsRenderer &r)
 
 	Vector2 texSize = Vector2(16, 32);
 
-	texPos.x = startX[currentanimFrame];
-	texPos.y = startY[currentAnimDir];
+	texPos.x = float(startX[currentanimFrame]);
+	texPos.y = float(startY[currentAnimDir]);
 
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, flips[currentAnimDir]);
-	r.DrawCircle(screenPos, texSize.x);
+	
+	if(this->collider->getType() == 2)
+		r.DrawCircle(this->collider->getPosition(), 8);
+	else
+	{
+		RectangleCollisionVolume* rcv = dynamic_cast<RectangleCollisionVolume*>(this->collider);
+		r.DrawBox(
+			this->collider->getPosition(),
+			Vector2(rcv->getX_Size() / 2, rcv->getY_Size() / 2));
+	}
 }
 
 void Robot::UpdateAnimFrame(float dt)

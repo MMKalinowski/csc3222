@@ -85,9 +85,9 @@ void GameSimsPhysics::IntegrateVel(const float dt)
 
 void GameSimsPhysics::CollisionDetection(const float dt)
 {
-	for (int i = 0; i < allColliders.size(); ++i)
+	for (unsigned int i = 0; i < allColliders.size(); ++i)
 	{
-		for (int j = i + 1; i < allColliders.size(); ++j)
+		for (unsigned int j = i + 1; j < allColliders.size(); ++j)
 		{
 			CheckCollision(allColliders[i], allColliders[j]);
 		}
@@ -100,23 +100,26 @@ bool GameSimsPhysics::CheckCollision(CollisionVolume* l, CollisionVolume* r)
 	{
 		if (l->getType() == 2)
 		{
-			CircleCollisionVolume* left = static_cast<CircleCollisionVolume*>(l);
-			CircleCollisionVolume* right = static_cast<CircleCollisionVolume*>(r);
+			CircleCollisionVolume* left = dynamic_cast<CircleCollisionVolume*>(l);
+			CircleCollisionVolume* right = dynamic_cast<CircleCollisionVolume*>(r);
+			return CircleCircle(left, right);
 		}
 		else
 		{
-
+			RectangleCollisionVolume* left = dynamic_cast<RectangleCollisionVolume*>(l);
+			RectangleCollisionVolume* right = dynamic_cast<RectangleCollisionVolume*>(r);
+			return RectRect(left, right);
 		}
 	}
 	else
 	{
-
+		return CircleRect(l, r);
 	}
 
 	return false;
 }
 
-bool CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
+bool GameSimsPhysics::CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
 {
 	int radiusL = l->getRadius();
 	int radiusR = r->getRadius();
@@ -124,8 +127,54 @@ bool CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
 	Vector2 posR = r->getPosition();
 
 	if (pow((posR.x - posL.x), 2) + pow((posL.y - posR.y), 2) <= pow((radiusL + radiusR), 2))
+		return true;
+
+	return false;
+}
+
+bool GameSimsPhysics::RectRect(RectangleCollisionVolume* l, RectangleCollisionVolume* r)
+{
+	int xdelta = abs(l->getPosition().x - r->getPosition().x);
+	int ydelta = abs(l->getPosition().y - r->getPosition().y);
+
+	if (xdelta < ((l->getX_Size() / 2) + (r->getX_Size() / 2)) && ydelta < ((l->getY_Size() / 2) + (r->getY_Size() / 2)))
 	{
-		std::cout << "COLLISION!!! DETAILS:\nRadius l: " <<
-			radiusL << "\nPosition l: " << posL << std::endl;
+		std::cout << "COLLIDE PLOX" << std::endl;
+		return true;
 	}
+
+	return false;
+
+	/*Vector2 l1 = l->getPosition();
+	l1.x = l1.x - (l->getX_Size() / 2);
+	l1.y = l1.y - (l->getY_Size() / 2);
+
+	Vector2 r1 = l1;
+	r1.x = r1.x + l->getX_Size();
+	r1.y = r1.y + l->getY_Size();
+
+	Vector2 l2 = r->getPosition();
+	l2.x = l2.x - (r->getX_Size() / 2);
+	l2.y = l2.y - (r->getY_Size() / 2);
+
+	Vector2 r2 = l2;
+	r2.x = r2.x + r->getX_Size();
+	r2.y = r2.y + r->getY_Size();
+
+	if ((l1.x < r2.x || l2.x < r1.x))
+	{
+		if (r1.y > l2.y || l1.y < r2.y)
+		{
+			std::cout << "COLLIDE PLOX" << std::endl;
+			std::cout << "Rect1: l1 " << l1 << "; r1 " << r1 << std::endl;
+			std::cout << "Rect2: l2 " << l2 << "; r2 " << r2 << std::endl;
+			return true;
+		}
+	}
+
+	return false;*/
+}
+bool GameSimsPhysics::CircleRect(CollisionVolume* l, CollisionVolume* r)
+{
+	return false;
 }

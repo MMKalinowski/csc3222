@@ -2,6 +2,9 @@
 #include "Laser.h"
 #include "TextureManager.h"
 #include "RobotRescueGame.h"
+#include "CircleCollisionVolume.h"
+#include "RectangleCollisionVolume.h"
+
 #include "../../Common/Window.h"
 
 using namespace NCL;
@@ -12,9 +15,11 @@ PlayerRobot::PlayerRobot() : Robot()
 {
 	texture = texManager->GetTexture("Turret Bot.png");
 
-	position = Vector2(32, 32);
+	position = Vector2(32, 64);
 
 	this->inverseMass = 5;
+	//this->SetCollider(new CircleCollisionVolume(position, Vector2(8,24), 8));
+	SetCollider(new RectangleCollisionVolume(position, Vector2(8, 24), 16, 16));
 }
 
 PlayerRobot::~PlayerRobot()
@@ -74,6 +79,8 @@ bool PlayerRobot::UpdateObject(float dt)
 		game->AddNewObject(shot);
 		laserDir.ToZero();
 	}
+
+	this->collider->updatePos(this->position + this->collider->getOffset());
 
 	return true;
 }
