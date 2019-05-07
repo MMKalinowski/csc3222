@@ -6,6 +6,8 @@ namespace NCL {
 		class Vector2;
 		class Vector3;
 
+		static constexpr float	EPSILON = 0.0001f;
+
 		//It's pi(ish)...
 		static const float		PI = 3.14159265358979323846f;
 

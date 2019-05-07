@@ -3,6 +3,7 @@
 #include "CircleCollisionVolume.h"
 #include "RectangleCollisionVolume.h"
 #include "../../Common/Vector2.h"
+#include "../../Common/Maths.h"
 
 namespace NCL
 {
@@ -14,7 +15,7 @@ namespace NCL
 		struct Collision
 		{
 			Vector2 normal;
-			int penetration;
+			float penetration;
 			bool occured() const { return penetration > 0; }
 		};
 
@@ -49,11 +50,17 @@ namespace NCL
 			std::vector<RigidBody*>			allBodies;
 			std::vector<CollisionVolume*>	allColliders;
 
-			int clamp(int val, int minv, int maxv) { return max(min(val, maxv), minv); }
-
-			int min(int l, int r) { return l > r ? r : l; }
-
-			int max(int l, int r) { return l > r ? l : r; }
+			//float clamp(const float val, const float minv, const float maxv) { return max(minv, min(val, maxv)); }
+			
+			float min(const float l, const float r)
+			{
+				return std::abs(l - r) > Maths::EPSILON ? r : l;
+			}
+			
+			float max(const float l, const float r) 
+			{
+				return std::abs(l - r) > Maths::EPSILON ? l : r;
+			}
 		};
 	}
 }

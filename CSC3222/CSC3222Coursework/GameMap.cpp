@@ -65,7 +65,7 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 
 			mapData[tileIndex] = (MapTileType)(type - 48);
 			
-			if (mapData[tileIndex] == 2)
+			if (mapData[tileIndex] == -1)
 			{
 				physics->AddCollider(new RectangleCollisionVolume(
 					Vector2(x*16,y*16),

@@ -96,7 +96,6 @@ void GameSimsPhysics::CollisionDetection(const float dt)
 				if (collision.occured())
 				{
 					ResolveCollision(c, c2, collision);
-					//std::cout << "golizja :~~DD" << std::endl;
 				}
 			}
 		}
@@ -105,7 +104,34 @@ void GameSimsPhysics::CollisionDetection(const float dt)
 
 void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, Collision col)
 {
+	RigidBody* const lBody = l->getRigidBody();
+	RigidBody* const rBody = r->getRigidBody();
 
+	const auto left  = lBody ? std::make_pair(lBody->GetPosition(), lBody->GetMass()) : std::make_pair(Vector2(0.f, 0.f), 0.f);
+	const auto right = rBody ? std::make_pair(rBody->GetPosition(), rBody->GetMass()) : std::make_pair(Vector2(0.f, 0.f), 0.f);
+
+	const float totalMass = left.second + right.second;
+	
+	if (totalMass)
+	{
+		const Vector2 lPos = left.first;
+		const Vector2 rPos = right.first;
+
+		if (lBody)
+		{
+			const Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
+			lBody->SetPosition(newPos);
+			l->updatePos(newPos + l->getOffset());
+		}
+		if (rBody)
+		{
+			const Vector2 newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
+			rBody->SetPosition(newPos);
+			r->updatePos(newPos + r->getOffset());
+		}
+
+
+	}
 }
 
 Collision GameSimsPhysics::CheckCollision(CollisionVolume* l, CollisionVolume* r)
@@ -135,12 +161,12 @@ Collision GameSimsPhysics::CheckCollision(CollisionVolume* l, CollisionVolume* r
 
 Collision GameSimsPhysics::CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
 {
-	int radiusL = l->getRadius();
-	int radiusR = r->getRadius();
+	float radiusL = l->getRadius();
+	float radiusR = r->getRadius();
 	Vector2 posL = l->getPosition();
 	Vector2 posR = r->getPosition();
 	
-	return { (posL - posR).Normalize(), int((radiusL + radiusR) - (posL - posR).Length()) };
+	return { (posL - posR).Normalize(), ((radiusL + radiusR) - (posL - posR).Length()) };
 
 	//return (pow((posR.x - posL.x), 2) + pow((posL.y - posR.y), 2) <= pow((radiusL + radiusR), 2));
 		//return true;//return {};
@@ -160,22 +186,22 @@ Collision GameSimsPhysics::RectRect(RectangleCollisionVolume* l, RectangleCollis
 	const Vector2 lsiz = { float(l->getX_Size()), float(l->getY_Size()) };
 	const Vector2 rsiz = { float(r->getX_Size()), float(r->getY_Size()) };
 
-	const int lMinX = min(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
-	const int lMaxX = max(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
-	const int lMinY = min(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
-	const int lMaxY = max(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
+	const float lMinX = min(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
+	const float lMaxX = max(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
+	const float lMinY = min(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
+	const float lMaxY = max(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
 
-	const int rMinX = min(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
-	const int rMaxX = max(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
-	const int rMinY = min(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
-	const int rMaxY = max(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
+	const float rMinX = min(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
+	const float rMaxX = max(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
+	const float rMinY = min(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
+	const float rMaxY = max(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
 
-	const int il = max(lMinX, rMinX);
-	const int it = max(lMinY, rMinY);
-	const int ir = min(lMaxX, rMaxX);
-	const int ib = min(lMaxY, rMaxY);
+	const float il = max(lMinX, rMinX);
+	const float it = max(lMinY, rMinY);
+	const float ir = min(lMaxX, rMaxX);
+	const float ib = min(lMaxY, rMaxY);
 
-	return { (lpos - rpos).Normalize(), int((Vector2(il, it) - Vector2(ir, ib)).Length()) };
+	return { (lpos - rpos).Normalize(), (Vector2(il, it) - Vector2(ir, ib)).Length() };
 
 	//return (xdelta < (l->getX_Size() + r->getX_Size()) / 2 && ydelta < (l->getY_Size() + r->getY_Size()) / 2);
 }
@@ -199,17 +225,15 @@ Collision GameSimsPhysics::CircleRect(CollisionVolume* l, CollisionVolume* r)
 	Vector2 circpos = left->getPosition();
 	Vector2 rectpos = right->getPosition();
 
-	const int xmin = rectpos.x - (right->getX_Size() / 2);
-	const int xmax = rectpos.x + (right->getX_Size() / 2);
-	const int ymin = rectpos.y - (right->getY_Size() / 2);
-	const int ymax = rectpos.y + (right->getY_Size() / 2);
+	const float xmin = rectpos.x - (right->getX_Size() / 2);
+	const float xmax = rectpos.x + (right->getX_Size() / 2);
+	const float ymin = rectpos.y - (right->getY_Size() / 2);
+	const float ymax = rectpos.y + (right->getY_Size() / 2);
 
-	circpos.x = clamp(circpos.x, xmin, xmax);
-	circpos.y = clamp(circpos.y, ymin, ymax);
+	circpos.x = Maths::Clamp(circpos.x, xmin, xmax);
+	circpos.y = Maths::Clamp(circpos.y, ymin, ymax);
 
-	const int dist = pow(left->getPosition().x - circpos.x, 2) + pow(left->getPosition().y - circpos.y, 2);
+	const float dist = pow(left->getPosition().x - circpos.x, 2) + pow(left->getPosition().y - circpos.y, 2);
 
-	return { (left->getPosition() - circpos).Normalize(), int(left->getRadius() - std::sqrt(dist)) };
-
-	//return dist < pow(left->getRadius(), 2);
+	return { (left->getPosition() - circpos).Normalize(), float(left->getRadius() - std::sqrt(dist)) };
 }

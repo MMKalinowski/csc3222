@@ -52,6 +52,11 @@ namespace NCL {
 				return *this;
 			}
 
+			float Dot(const Vector2& other)
+			{
+				return (x*other.x) + (y*other.y);
+			}
+
 			float Length()
 			{
 				return std::sqrtf((x*x) + (y*y));

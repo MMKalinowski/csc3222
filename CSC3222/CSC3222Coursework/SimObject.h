@@ -1,6 +1,7 @@
 #pragma once
 #include "../../Common/Vector2.h"
 #include "RigidBody.h"
+#include "CollisionVolume.h"
 
 namespace NCL
 {

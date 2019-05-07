@@ -31,6 +31,7 @@ namespace NCL
 			void addTag(ColliderTag newTag) { tag = newTag; }
 			ColliderTag getTag() { return tag; }
 			void setRigidBody(RigidBody* const rb) { this->rb = rb; }
+			RigidBody* getRigidBody() const { return rb; }
 
 			protected:
 			int type = 0;

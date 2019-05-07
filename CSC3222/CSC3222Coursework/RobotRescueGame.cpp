@@ -170,6 +170,7 @@ void RobotRescueGame::AddCollectableRobot(const Vector2& position)
 	Vector2 offset = { 8,8 };
 	robot->SetCollider(new CircleCollisionVolume(position, offset, 8));
 	robot->GetCollider()->addTag(ColliderTag::Collectible);
+	
 
 	AddNewObject(robot);
 }

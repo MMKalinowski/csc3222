@@ -43,6 +43,11 @@ namespace NCL
 				return inverseMass;
 			}
 
+			void SetMass(float invMass)
+			{
+				this->inverseMass = invMass;
+			}
+
 			float GetElasticity()
 			{
 				return elasticity;
