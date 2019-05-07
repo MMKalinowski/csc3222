@@ -11,6 +11,13 @@ namespace NCL
 		class RigidBody;
 		class CollisionVolume;
 
+		struct Collision
+		{
+			Vector2 normal;
+			int penetration;
+			bool occured() const { return penetration > 0; }
+		};
+
 		class GameSimsPhysics
 		{
 			public:
@@ -26,21 +33,27 @@ namespace NCL
 			void RemoveCollider(CollisionVolume* c);
 
 			protected:
-			//void Integration(const float dt);
 			void IntegrateAccel(const float dt);
 			void IntegrateVel(const float dt);
 			
 			void CollisionDetection(const float dt);
-			bool CheckCollision(CollisionVolume* l, CollisionVolume* r);
-			bool CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r);
-			bool RectRect(RectangleCollisionVolume* l, RectangleCollisionVolume* r);
-			bool CircleRect(CollisionVolume* l, CollisionVolume* r);
+			Collision CheckCollision(CollisionVolume* l, CollisionVolume* r);
+			Collision CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r);
+			Collision RectRect(RectangleCollisionVolume* l, RectangleCollisionVolume* r);
+			Collision CircleRect(CollisionVolume* l, CollisionVolume* r);
+
+			void ResolveCollision(CollisionVolume* l, CollisionVolume* r, Collision col);
 
 			float timeUntilUpdate = 0;
 			const float subDT = 1.0f / 120.f;
-
 			std::vector<RigidBody*>			allBodies;
 			std::vector<CollisionVolume*>	allColliders;
+
+			int clamp(int val, int minv, int maxv) { return max(min(val, maxv), minv); }
+
+			int min(int l, int r) { return l > r ? r : l; }
+
+			int max(int l, int r) { return l > r ? l : r; }
 		};
 	}
 }

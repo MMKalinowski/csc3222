@@ -1,5 +1,6 @@
 #pragma once
 #include "CollisionVolume.h"
+//#include "RigidBody.h"
 #include "../../Common/Vector2.h"
 
 namespace NCL
@@ -10,7 +11,7 @@ namespace NCL
 		class RectangleCollisionVolume : public CollisionVolume
 		{
 			public:
-			RectangleCollisionVolume(Vector2 position, Vector2 offset, int x_size, int y_size);
+			RectangleCollisionVolume(Vector2 position, Vector2 offset, int x_size, int y_size, RigidBody* = nullptr);
 			~RectangleCollisionVolume();
 
 			int getX_Size() { return x_size; }

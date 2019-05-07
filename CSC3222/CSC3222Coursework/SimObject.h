@@ -25,7 +25,11 @@ namespace NCL
 
 			void SetCollider(CollisionVolume * c)
 			{
-				collider = c;
+				if (c)
+				{
+					collider = c;
+					collider->setRigidBody(this);
+				}
 			}
 
 			CollisionVolume* GetCollider() const

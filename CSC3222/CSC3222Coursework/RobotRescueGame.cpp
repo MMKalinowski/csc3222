@@ -45,35 +45,35 @@ void RobotRescueGame::Update(const float dt)
 	
 	// move to function!
 	//BEGIN
-	//if (spawnTimer >= spawnDelay)
-	//{
-	//	enemyRobotSpawn = true;
-	//	spawnTimer = 0.0f;
-	//}
+	if (spawnTimer >= spawnDelay)
+	{
+		enemyRobotSpawn = true;
+		spawnTimer = 0.0f;
+	}
 
-	//if (enemyRobotSpawn && robotCount < maxEnemies)
-	//{
-	//	//std::cout << "t: " + std::to_string(gameTime) << std::endl;
-	//	float spawnX = MAX_X - 5.0f + 0;
-	//	float spawnY = MAX_Y - 5.0f + 0;
+	if (enemyRobotSpawn && robotCount < maxEnemies)
+	{
+		//std::cout << "t: " + std::to_string(gameTime) << std::endl;
+		float spawnX = MAX_X - 5.0f + 0;
+		float spawnY = MAX_Y - 5.0f + 0;
 
-	//	float spawnTopX = MAX_X/1.25f;
-	//	float spawnTopY = MAX_Y/4.3f;
-	//	
-	//	(rand() % 2 == 0) ? AddEnemyRobot(Vector2(spawnX, spawnY)) 
-	//		: AddEnemyRobot(Vector2(spawnTopX, spawnTopY));
-	//	
-	//	robotCount++;
-	//	enemyRobotSpawn = !enemyRobotSpawn;
-	//}
+		float spawnTopX = MAX_X/1.25f;
+		float spawnTopY = MAX_Y/4.3f;
+		
+		(rand() % 2 == 0) ? AddEnemyRobot(Vector2(spawnX, spawnY)) 
+			: AddEnemyRobot(Vector2(spawnTopX, spawnTopY));
+		
+		robotCount++;
+		enemyRobotSpawn = !enemyRobotSpawn;
+	}
 	//END
 
-	float spawnX = MAX_X - 5.0f + 0;
+	/*float spawnX = MAX_X - 5.0f + 0;
 	float spawnY = MAX_Y - 5.0f + 0;
 	
 	if(!yes)
 		AddEnemyRobot(Vector2(spawnX, spawnY));
-	yes = true;
+	yes = true;*/
 
 	for (auto i : newObjects)
 	{
@@ -127,12 +127,12 @@ void RobotRescueGame::InitialiseGame()
 	testRobot = new PlayerRobot();
 	AddNewObject(testRobot);
 
-	/*for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		float randomX = 32.0f + (rand() % MAX_X);
 		float randomY = 32.0f + (rand() % MAX_Y);
 		AddCollectableRobot(Vector2(randomX, randomY));
-	}*/
+	}
 
 	gameTime = 0;
 	currentScore = 0;
@@ -155,8 +155,9 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 
 	robot->SetPosition(position);
 	Vector2 offset = { 8,24 };
-	//robot->SetCollider(new CircleCollisionVolume(position, offset, 8));
-	robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
+	robot->SetCollider(new CircleCollisionVolume(position, Vector2(8,24), 8));
+	robot->GetCollider()->addTag(ColliderTag::Enemy);
+	//robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
 
 	AddNewObject(robot);
 }
@@ -166,8 +167,9 @@ void RobotRescueGame::AddCollectableRobot(const Vector2& position)
 	CollectableRobot* robot = new CollectableRobot();
 
 	robot->SetPosition(position);
-	Vector2 offset = { 20,1 };
+	Vector2 offset = { 8,8 };
 	robot->SetCollider(new CircleCollisionVolume(position, offset, 8));
+	robot->GetCollider()->addTag(ColliderTag::Collectible);
 
 	AddNewObject(robot);
 }

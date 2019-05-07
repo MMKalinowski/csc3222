@@ -38,10 +38,10 @@ void Robot::DrawObject(GameSimsRenderer &r)
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, flips[currentAnimDir]);
 	
 	if(this->collider->getType() == 2)
-		r.DrawCircle(this->collider->getPosition(), 8);
+		r.DrawCircle(this->collider->getPosition(), 7);
 	else
 	{
-		RectangleCollisionVolume* rcv = dynamic_cast<RectangleCollisionVolume*>(this->collider);
+		RectangleCollisionVolume* rcv = reinterpret_cast<RectangleCollisionVolume*>(this->collider);
 		r.DrawBox(
 			this->collider->getPosition(),
 			Vector2(rcv->getX_Size() / 2, rcv->getY_Size() / 2));

@@ -1,6 +1,7 @@
 #include "CollectableRobot.h"
 #include "GameSimsRenderer.h"
 #include "TextureManager.h"
+#include "CollisionVolume.h"
 #include "../../Common/TextureLoader.h"
 #include "../../Common/Vector4.h"
 
@@ -51,6 +52,7 @@ void CollectableRobot::DrawObject(GameSimsRenderer &r)
 	Vector2 screenPos = position;
 
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, false);
+	r.DrawCircle(screenPos + this->GetCollider()->getOffset(), 8);
 }
 
 bool CollectableRobot::UpdateObject(float dt)

@@ -38,6 +38,15 @@ namespace NCL
 				force += newForce;
 			}
 
+			float GetMass()
+			{
+				return inverseMass;
+			}
+
+			float GetElasticity()
+			{
+				return elasticity;
+			}
 
 			protected:
 			Vector2 position;

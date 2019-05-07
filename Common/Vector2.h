@@ -40,14 +40,16 @@ namespace NCL {
 				y = 0.0f;
 			}
 
-			void Normalize()
+			Vector2& Normalize()
 			{
-				if (x == 0 && y == 0)
-					return;
+				if (x != 0 || y != 0)
+				{
+					float length = Length();
+					x /= length;
+					y /= length;
+				}
 
-				float length = Length();
-				x /= length;
-				y /= length;
+				return *this;
 			}
 
 			float Length()
