@@ -71,6 +71,8 @@ namespace NCL
 			MapTileType*	mapData;
 			StructureData*	structureData;
 			GameSimsPhysics* physics;
+
+			void GenerateColliders();
 		};
 	}
 }

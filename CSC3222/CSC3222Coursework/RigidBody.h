@@ -15,6 +15,8 @@ namespace NCL
 			RigidBody(CollisionVolume* = nullptr);
 			~RigidBody();
 
+			virtual void OnCollision(CollisionVolume* other){}
+
 			virtual void SetCollider(CollisionVolume* collider)
 			{
 				this->collider = collider;

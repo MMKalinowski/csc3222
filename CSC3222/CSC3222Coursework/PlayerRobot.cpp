@@ -20,7 +20,7 @@ PlayerRobot::PlayerRobot() : Robot()
 	this->inverseMass = 1;
 	this->SetCollider(new CircleCollisionVolume(position, Vector2(8,24), 7));
 	//this->SetCollider(new RectangleCollisionVolume(position, Vector2(8, 24), 16, 16));
-	this->collider->addTag(ColliderTag::Player);
+	this->collider->setTag(ColliderTag::Player);
 }
 
 PlayerRobot::~PlayerRobot()

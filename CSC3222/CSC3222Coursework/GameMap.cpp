@@ -76,12 +76,12 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 			}
 		}
 	}
-	physics->AddCollider(new RectangleCollisionVolume(
+	/*physics->AddCollider(new RectangleCollisionVolume(
 		Vector2(0, 0),
 		Vector2(16*15, 8),
 		16 * 30,
 		16)
-	);
+	);*/
 	mapFile >> structureCount;
 
 	structureData = new StructureData[structureCount];
@@ -100,6 +100,8 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 		structureData[i].startPos.x = float(xTile * 16); //explicit type conversion
 		structureData[i].startPos.y = float(yTile * 16); //explicit type conversion
 	}
+
+	GenerateColliders();
 }
 
 GameMap::~GameMap()
@@ -156,5 +158,57 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 		Vector2 screenPos = structureData[i].startPos;
 
 		r.DrawTextureArea((OGLTexture*)tileTexture, texPos, texSize, screenPos, false);
+	}
+}
+
+void GameMap::GenerateColliders()
+{
+	Vector2 startingPoint = {0,0};
+	int prevX = 0;
+	int prevY = 0;
+	int currentX = 0;
+	int currentY = 0;
+	int prevType = mapData[0];
+	int currentType = 0;
+
+	for (int y = 0; y < mapHeight; ++y)
+	{
+		for (int x = 0; x < mapWidth; ++x)
+		{
+			currentX = x;
+			currentY = y;
+			int tileIndex = (y * mapWidth);
+			currentType = mapData[tileIndex + x];
+
+			if (prevType != currentType || currentY > prevY)
+			{
+				if (!prevType == MapTileType::Flat)
+				{
+					RectangleCollisionVolume* col = new RectangleCollisionVolume(
+						startingPoint, { float(currentX * 8), float(currentY * 8) }, currentX * 16, currentY * 16
+					);
+
+					switch (prevType)
+					{
+						case MapTileType::Wall:
+							col->setTag(ColliderTag::Terrain);
+							break;
+						case MapTileType::Rough:
+							col->setTag(ColliderTag::Slowdown);
+							break;
+						default:
+							col->setTag(ColliderTag::Free);
+							break;
+					}
+
+					physics->AddCollider(col);
+					startingPoint = { float(currentX * 16), float(currentY * 16) };
+				}
+			}
+
+			prevX = currentX;
+			prevY = currentY;
+			prevType = currentType;
+		}
 	}
 }
