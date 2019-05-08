@@ -12,9 +12,9 @@ EnemyRobot::EnemyRobot() : Robot()
 
 	moving = false;
 
-	this->inverseMass = 1.5;
+	this->inverseMass = 1;
 
-	direction = Vector2();
+	direction = {};
 }
 
 EnemyRobot::~EnemyRobot()

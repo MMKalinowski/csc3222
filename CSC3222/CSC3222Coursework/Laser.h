@@ -15,7 +15,7 @@ namespace NCL
 			bool UpdateObject(float dt) override;
 
 			private:
-			float SPEED = 50;
+			const float SPEED = 50;
 			Vector2 dir;
 		};
 	}

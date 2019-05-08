@@ -24,11 +24,12 @@ namespace NCL
 			~CollisionVolume();
 
 			int getType() { return type; }
+			void setOffset(Maths::Vector2 off) { offset = off; }
 			Maths::Vector2 getOffset() { return offset; }
 			virtual Maths::Vector2 getPosition() = 0; //change from pure to normal
 			void updatePos(Maths::Vector2 newPos) { position = newPos; }
 
-			void addTag(ColliderTag newTag) { tag = newTag; }
+			void setTag(ColliderTag newTag) { tag = newTag; }
 			ColliderTag getTag() { return tag; }
 			void setRigidBody(RigidBody* const rb) { this->rb = rb; }
 			RigidBody* getRigidBody() const { return rb; }

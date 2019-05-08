@@ -24,7 +24,7 @@ namespace NCL
 			SimObject();
 			~SimObject();
 
-			void SetCollider(CollisionVolume * c)
+			void SetCollider(CollisionVolume* c)
 			{
 				if (c)
 				{

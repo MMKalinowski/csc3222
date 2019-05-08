@@ -51,16 +51,16 @@ namespace NCL
 			std::vector<CollisionVolume*>	allColliders;
 
 			//float clamp(const float val, const float minv, const float maxv) { return max(minv, min(val, maxv)); }
-			
+			/*
 			float min(const float l, const float r)
 			{
-				return std::abs(l - r) > Maths::EPSILON ? r : l;
+				return l > r ? r : l;
 			}
 			
 			float max(const float l, const float r) 
 			{
 				return std::abs(l - r) > Maths::EPSILON ? l : r;
-			}
+			}*/
 		};
 	}
 }

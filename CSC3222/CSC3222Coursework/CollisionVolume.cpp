@@ -8,7 +8,12 @@ CollisionVolume::CollisionVolume(Maths::Vector2 position, Maths::Vector2 offset,
 , type(type)
 , position(position + offset)
 , rb(rb)
-{}
+{
+	if (rb)
+	{
+		rb->SetCollider(this);
+	}
+}
 
 
 CollisionVolume::~CollisionVolume()

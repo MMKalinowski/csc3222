@@ -6,12 +6,24 @@ namespace NCL
 	using namespace Maths;
 	namespace CSC3222
 	{
+		class CollisionVolume;
+
 		class RigidBody
 		{
 			friend class GameSimsPhysics;
 			public:
-			RigidBody();
+			RigidBody(CollisionVolume* = nullptr);
 			~RigidBody();
+
+			virtual void SetCollider(CollisionVolume* collider)
+			{
+				this->collider = collider;
+			}
+
+			virtual CollisionVolume* GetCollider() const
+			{
+				return this->collider;
+			}
 
 			Vector2 GetPosition() const
 			{
@@ -61,7 +73,9 @@ namespace NCL
 			float inverseMass;
 			float elasticity;
 
-
+			CollisionVolume* collider;
 		};
 	}
 }
+
+#include "CollisionVolume.h"

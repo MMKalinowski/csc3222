@@ -1,6 +1,7 @@
 #include "Laser.h"
 #include "TextureManager.h"
 #include "GameSimsRenderer.h"
+#include "CircleCollisionVolume.h"
 
 #include "../../Common/Maths.h"
 
@@ -37,12 +38,14 @@ Laser::Laser(Vector2& direction) : SimObject()
 	texture = texManager->GetTexture("bullet.png");
 	
 	velocity = (direction.x != 0 || direction.y != 0) ? direction : Vector2{ 1.0f, .0f };
+	velocity *= 100;
 	dir = velocity;
-	std::cout << dir << std::endl;
+
+	this->SetCollider(new CircleCollisionVolume(position, { 0, 0 }, 3, this));
 
 	inverseMass = 1.f / float(rand() % 5 + 1); //randomisation for physics test
-	std::cout << 1.f / inverseMass << std::endl;
 	//inverseMass = 1.0f;
+	this->AddForce(dir * SPEED / inverseMass);
 }
 
 Laser::~Laser()
@@ -54,21 +57,10 @@ void Laser::DrawObject(GameSimsRenderer &r)
 	Vector2 texPos;
 	Vector2 texSize = Vector2(16, 16);
 
-	float test = atan2(velocity.y, velocity.x);
+	const double test = atan2(velocity.y, velocity.x);
+	const double degrees = std::fmodf(Maths::RadiansToDegrees(test) + 180.0f, 360.f);
 
-	float degrees = Maths::RadiansToDegrees(test);
-
-	degrees += 180.0f;
-
-	if (degrees == 360.0f)
-	{
-		degrees = 0;
-	}
-
-	degrees /= 360.0f;
-	degrees *= 16.0f;
-
-	int frame = degrees;
+	const int frame = degrees * 16 / 360;
 
 	texPos.x = frames[frame].x;
 	texPos.y = frames[frame].y;
@@ -76,9 +68,10 @@ void Laser::DrawObject(GameSimsRenderer &r)
 	texSize.x = frames[frame].z;
 	texSize.y = frames[frame].w;
 
+	this->GetCollider()->setOffset(texSize / 2.f);
 
-	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos);
-
+	r.DrawTextureArea(reinterpret_cast<OGLTexture*>(texture), texPos, texSize, screenPos);
+	r.DrawCircle(this->GetCollider()->getPosition(), 3);
 }
 
 bool Laser::UpdateObject(const float dt)
@@ -88,8 +81,6 @@ bool Laser::UpdateObject(const float dt)
 	
 	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
 	this->SetPosition(nextPosition);*/
-
-	this->AddForce(dir * SPEED / inverseMass);
 
 	return true;
 }

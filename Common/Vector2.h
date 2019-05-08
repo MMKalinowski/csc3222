@@ -52,7 +52,7 @@ namespace NCL {
 				return *this;
 			}
 
-			float Dot(const Vector2& other)
+			float Dot(const Vector2& other) const
 			{
 				return (x*other.x) + (y*other.y);
 			}

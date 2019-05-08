@@ -76,6 +76,12 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 			}
 		}
 	}
+	physics->AddCollider(new RectangleCollisionVolume(
+		Vector2(0, 0),
+		Vector2(16*15, 8),
+		16 * 30,
+		16)
+	);
 	mapFile >> structureCount;
 
 	structureData = new StructureData[structureCount];
@@ -133,7 +139,7 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 
 			r.DrawTextureArea((OGLTexture*)tileTexture, texPos, texSize, screenPos, false);
 
-			if (tileType == 2)
+			if (tileType == 1)
 			{
 				r.DrawBox(screenPos + Vector2(8, 8), Vector2(8, 8));
 			}

@@ -155,9 +155,9 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 
 	robot->SetPosition(position);
 	Vector2 offset = { 8,24 };
-	robot->SetCollider(new CircleCollisionVolume(position, Vector2(8,24), 8));
+	//robot->SetCollider(new CircleCollisionVolume(position, Vector2(8, 24), 8));
+	robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
 	robot->GetCollider()->addTag(ColliderTag::Enemy);
-	//robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
 
 	AddNewObject(robot);
 }
@@ -165,7 +165,8 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 void RobotRescueGame::AddCollectableRobot(const Vector2& position)
 {
 	CollectableRobot* robot = new CollectableRobot();
-
+	
+	robot->SetMass(3);
 	robot->SetPosition(position);
 	Vector2 offset = { 8,8 };
 	robot->SetCollider(new CircleCollisionVolume(position, offset, 8));

@@ -71,7 +71,7 @@ void GameSimsPhysics::IntegrateAccel(const float dt)
 	for (auto obj : allBodies)
 	{
 		Vector2 accel = obj->force * obj->inverseMass;
-		obj->SetVelocity(accel + (accel * dt * 0.999f));
+		obj->SetVelocity(obj->GetVelocity() + (accel * dt * 0.999f));
 	}
 }
 
@@ -81,6 +81,10 @@ void GameSimsPhysics::IntegrateVel(const float dt)
 	{
 		obj->SetPosition(obj->GetPosition() + obj->GetVelocity() * dt);
 		obj->force.ToZero();
+		if (obj->GetCollider())
+		{
+			obj->GetCollider()->updatePos(obj->GetPosition() + obj->GetCollider()->getOffset());
+		}
 	}
 }
 
@@ -107,8 +111,17 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 	RigidBody* const lBody = l->getRigidBody();
 	RigidBody* const rBody = r->getRigidBody();
 
-	const auto left  = lBody ? std::make_pair(lBody->GetPosition(), lBody->GetMass()) : std::make_pair(Vector2(0.f, 0.f), 0.f);
-	const auto right = rBody ? std::make_pair(rBody->GetPosition(), rBody->GetMass()) : std::make_pair(Vector2(0.f, 0.f), 0.f);
+	if (!lBody && !rBody)
+	{
+		return;
+	}
+	if (!lBody || !rBody)
+	{
+		return;
+	}
+
+	const auto left  = std::make_pair(lBody->GetPosition(), lBody->GetMass());
+	const auto right = std::make_pair(rBody->GetPosition(), rBody->GetMass());
 
 	const float totalMass = left.second + right.second;
 	
@@ -117,20 +130,22 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 		const Vector2 lPos = left.first;
 		const Vector2 rPos = right.first;
 
-		if (lBody)
-		{
-			const Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
-			lBody->SetPosition(newPos);
-			l->updatePos(newPos + l->getOffset());
-		}
-		if (rBody)
-		{
-			const Vector2 newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
-			rBody->SetPosition(newPos);
-			r->updatePos(newPos + r->getOffset());
-		}
+		Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
+		lBody->SetPosition(newPos);
+		l->updatePos(newPos + l->getOffset());
+		
+		newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
+		rBody->SetPosition(newPos);
+		r->updatePos(newPos + r->getOffset());
 
+		//elasticity
+		float e = .9f;
 
+		const Vector2 relativeVel = rBody->GetVelocity() - lBody->GetVelocity();
+		float impulse = (-1*(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
+
+		lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
+		rBody->SetVelocity(rBody->GetVelocity() + (col.normal * rBody->GetMass() * impulse));
 	}
 }
 
@@ -140,23 +155,18 @@ Collision GameSimsPhysics::CheckCollision(CollisionVolume* l, CollisionVolume* r
 	{
 		if (l->getType() == 2)
 		{
-			CircleCollisionVolume* left = reinterpret_cast<CircleCollisionVolume*>(l);
+			CircleCollisionVolume* left  = reinterpret_cast<CircleCollisionVolume*>(l);
 			CircleCollisionVolume* right = reinterpret_cast<CircleCollisionVolume*>(r);
 			return CircleCircle(left, right);
 		}
 		else
 		{
-			RectangleCollisionVolume* left = reinterpret_cast<RectangleCollisionVolume*>(l);
+			RectangleCollisionVolume* left  = reinterpret_cast<RectangleCollisionVolume*>(l);
 			RectangleCollisionVolume* right = reinterpret_cast<RectangleCollisionVolume*>(r);
 			return RectRect(left, right);
 		}
 	}
-	else
-	{
-		return CircleRect(l, r);
-		//return false;
-	}
-	//return false;
+	return CircleRect(l, r);
 }
 
 Collision GameSimsPhysics::CircleCircle(CircleCollisionVolume* l, CircleCollisionVolume* r)
@@ -167,43 +177,33 @@ Collision GameSimsPhysics::CircleCircle(CircleCollisionVolume* l, CircleCollisio
 	Vector2 posR = r->getPosition();
 	
 	return { (posL - posR).Normalize(), ((radiusL + radiusR) - (posL - posR).Length()) };
-
-	//return (pow((posR.x - posL.x), 2) + pow((posL.y - posR.y), 2) <= pow((radiusL + radiusR), 2));
-		//return true;//return {};
-
-	//return false;
 }
 
 Collision GameSimsPhysics::RectRect(RectangleCollisionVolume* l, RectangleCollisionVolume* r)
 {
-	////these 2 are bloat
-	//int xdelta = abs(l->getPosition().x - r->getPosition().x);
-	//int ydelta = abs(l->getPosition().y - r->getPosition().y);
-
+	//these 2 are bloat
 	const Vector2 lpos = l->getPosition();
 	const Vector2 rpos = r->getPosition();
 
 	const Vector2 lsiz = { float(l->getX_Size()), float(l->getY_Size()) };
 	const Vector2 rsiz = { float(r->getX_Size()), float(r->getY_Size()) };
 
-	const float lMinX = min(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
-	const float lMaxX = max(lpos.x - lsiz.x / 2, lpos.x + lsiz.x / 2);
-	const float lMinY = min(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
-	const float lMaxY = max(lpos.y - lsiz.y / 2, lpos.y + lsiz.y / 2);
+	const float lMinX = lpos.x - lsiz.x / 2;
+	const float lMaxX = lpos.x + lsiz.x / 2;
+	const float lMinY = lpos.y - lsiz.y / 2;
+	const float lMaxY = lpos.y + lsiz.y / 2;
 
-	const float rMinX = min(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
-	const float rMaxX = max(rpos.x - rsiz.x / 2, rpos.x + rsiz.x / 2);
-	const float rMinY = min(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
-	const float rMaxY = max(rpos.y - rsiz.y / 2, rpos.y + rsiz.y / 2);
+	const float rMinX = rpos.x - rsiz.x / 2;
+	const float rMaxX = rpos.x + rsiz.x / 2;
+	const float rMinY = rpos.y - rsiz.y / 2;
+	const float rMaxY = rpos.y + rsiz.y / 2;
 
-	const float il = max(lMinX, rMinX);
-	const float it = max(lMinY, rMinY);
-	const float ir = min(lMaxX, rMaxX);
-	const float ib = min(lMaxY, rMaxY);
+	const float il = std::max(lMinX, rMinX);
+	const float it = std::max(lMinY, rMinY);
+	const float ir = std::min(lMaxX, rMaxX);
+	const float ib = std::min(lMaxY, rMaxY);
 
-	return { (lpos - rpos).Normalize(), (Vector2(il, it) - Vector2(ir, ib)).Length() };
-
-	//return (xdelta < (l->getX_Size() + r->getX_Size()) / 2 && ydelta < (l->getY_Size() + r->getY_Size()) / 2);
+	return { (lpos - rpos).Normalize(), std::min(ir - il, ib - it) };
 }
 
 Collision GameSimsPhysics::CircleRect(CollisionVolume* l, CollisionVolume* r)
