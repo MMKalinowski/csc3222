@@ -10,7 +10,7 @@ namespace NCL
 		class CircleCollisionVolume : public CollisionVolume
 		{
 			public:
-			CircleCollisionVolume(Vector2 position, Vector2 offset, int radius, RigidBody* = nullptr);
+			CircleCollisionVolume(Vector2 position, Vector2 offset, int radius, RigidBody* = nullptr, ColliderTag = ColliderTag::Free);
 			~CircleCollisionVolume();
 
 			int getRadius() { return radius; }

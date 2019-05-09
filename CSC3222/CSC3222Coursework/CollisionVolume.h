@@ -20,7 +20,7 @@ namespace NCL
 		class CollisionVolume
 		{
 			public:
-			CollisionVolume(Maths::Vector2 position, Maths::Vector2 offset, int type, RigidBody* = nullptr);
+			CollisionVolume(Maths::Vector2 position, Maths::Vector2 offset, int type, RigidBody* = nullptr, ColliderTag = ColliderTag::Free);
 			~CollisionVolume();
 
 			int getType() { return type; }

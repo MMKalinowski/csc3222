@@ -29,7 +29,7 @@ void GameSimsPhysics::Update(const float dt)
 		IntegrateVel(dt);
 		
 		timeUntilUpdate -= subDT;
-		std::cout << allColliders.size() << std::endl;
+		//std::cout << allColliders.size() << std::endl;
 	}
 	
 }

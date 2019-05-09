@@ -72,7 +72,7 @@ namespace NCL
 			StructureData*	structureData;
 			GameSimsPhysics* physics;
 
-			void GenerateColliders();
+			void GenerateColliders(GameSimsPhysics*);
 		};
 	}
 }

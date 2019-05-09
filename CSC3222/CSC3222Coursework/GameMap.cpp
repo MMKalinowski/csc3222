@@ -76,12 +76,12 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 			}
 		}
 	}
-	/*physics->AddCollider(new RectangleCollisionVolume(
+	physics->AddCollider(new RectangleCollisionVolume(
 		Vector2(0, 0),
 		Vector2(16*15, 8),
 		16 * 30,
 		16)
-	);*/
+	);
 	mapFile >> structureCount;
 
 	structureData = new StructureData[structureCount];
@@ -101,7 +101,7 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 		structureData[i].startPos.y = float(yTile * 16); //explicit type conversion
 	}
 
-	GenerateColliders();
+	GenerateColliders(physics);
 }
 
 GameMap::~GameMap()
@@ -161,15 +161,16 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 	}
 }
 
-void GameMap::GenerateColliders()
+void GameMap::GenerateColliders(GameSimsPhysics* physicsLoc)
 {
-	Vector2 startingPoint = {0,0};
+	Vector2 startingPoint = Vector2(0, 0);
 	int prevX = 0;
 	int prevY = 0;
 	int currentX = 0;
 	int currentY = 0;
 	int prevType = mapData[0];
 	int currentType = 0;
+	ColliderTag tag = ColliderTag::Free;
 
 	for (int y = 0; y < mapHeight; ++y)
 	{
@@ -180,29 +181,29 @@ void GameMap::GenerateColliders()
 			int tileIndex = (y * mapWidth);
 			currentType = mapData[tileIndex + x];
 
-			if (prevType != currentType || currentY > prevY)
+			if (prevType != currentType || currentX+1 >= mapWidth)
 			{
 				if (!prevType == MapTileType::Flat)
 				{
-					RectangleCollisionVolume* col = new RectangleCollisionVolume(
-						startingPoint, { float(currentX * 8), float(currentY * 8) }, currentX * 16, currentY * 16
-					);
-
 					switch (prevType)
 					{
 						case MapTileType::Wall:
-							col->setTag(ColliderTag::Terrain);
+							tag = ColliderTag::Terrain;
 							break;
 						case MapTileType::Rough:
-							col->setTag(ColliderTag::Slowdown);
+							tag = ColliderTag::Slowdown;
 							break;
 						default:
-							col->setTag(ColliderTag::Free);
+							tag = ColliderTag::Free;
 							break;
 					}
 
-					physics->AddCollider(col);
-					startingPoint = { float(currentX * 16), float(currentY * 16) };
+					physicsLoc->AddCollider(new RectangleCollisionVolume(
+						startingPoint, Vector2( float(currentX * 8), float(currentY * 8) ),
+						(currentX + 1) * 16, (currentY + 1) * 16, nullptr, tag
+					));
+
+					startingPoint = Vector2(float(currentX * 16), float(currentY * 16));
 				}
 			}
 
