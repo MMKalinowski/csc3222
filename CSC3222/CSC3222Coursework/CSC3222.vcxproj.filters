@@ -72,6 +72,9 @@
     <ClCompile Include="RectangleCollisionVolume.cpp">
       <Filter>Physics</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMap.h">
@@ -117,6 +120,9 @@
       <Filter>Physics</Filter>
     </ClInclude>
     <ClInclude Include="RectangleCollisionVolume.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
       <Filter>Physics</Filter>
     </ClInclude>
   </ItemGroup>

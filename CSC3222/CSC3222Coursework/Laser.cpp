@@ -89,5 +89,6 @@ bool Laser::UpdateObject(const float dt)
 		this->SetVelocity(newVel * speed);
 	}
 
-	return true;
+	return position.x >= 0 && position.y >= 0 && position.x < 30 * 16 && position.y < 20 * 16;
+	//return true;
 }

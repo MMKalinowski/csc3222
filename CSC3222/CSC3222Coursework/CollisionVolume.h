@@ -14,7 +14,11 @@ namespace NCL
 			Slowdown,
 			Bullet,
 			Enemy,
-			Collectible
+			Collectible,
+			Red,
+			Green,
+			Blue,
+			Home,
 		};
 
 		class CollisionVolume

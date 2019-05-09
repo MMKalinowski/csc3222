@@ -27,7 +27,6 @@ void GameSimsPhysics::Update(const float dt)
 		IntegrateAccel(dt);
 		CollisionDetection(dt);
 		IntegrateVel(dt);
-		//Cleanup();
 		
 		timeUntilUpdate -= subDT;
 	}
@@ -105,6 +104,87 @@ void GameSimsPhysics::CollisionDetection(const float dt)
 		}
 	}
 }
+//
+//void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, Collision col)
+//{
+//	RigidBody* const lBody = l->getRigidBody();
+//	RigidBody* const rBody = r->getRigidBody();
+//	
+//	if (!lBody && !rBody)
+//	{
+//		return;
+//	}
+//
+//	const float e = .9f;
+//	
+//	static struct PosMassVel
+//	{
+//		Vector2 pos;
+//		float   mas;
+//		Vector2 vel;
+//	} left, right;
+//
+//	if (lBody)
+//	{
+//		left = { lBody->GetPosition(), lBody->GetMass(), lBody->GetVelocity() };
+//	}
+//	else
+//	{
+//		left = { l->getPosition(), .0f, {0, 0} };
+//	}
+//
+//	if (rBody)
+//	{
+//		right = { rBody->GetPosition(), rBody->GetMass(), rBody->GetVelocity() };
+//	}
+//	else
+//	{
+//		right = { r->getPosition(), .0f, {0, 0} };
+//	}
+//
+//	const float totalMass = left.mas + right.mas;
+//
+//	if (totalMass)
+//	{
+//		const Vector2 lPos = left.pos;
+//		const Vector2 rPos = right.pos;
+//
+//		if (rBody)
+//		{
+//			Vector2 newPos = rPos - (col.normal * col.penetration * (right.mas / totalMass));
+//			rBody->SetPosition(newPos);
+//			r->updatePos(newPos + r->getOffset());
+//		}
+//		if (lBody)
+//		{
+//			Vector2 newPos = lPos - (col.normal * col.penetration * (left.mas / totalMass));
+//			lBody->SetPosition(newPos);
+//			l->updatePos(newPos + l->getOffset());
+//		}
+//
+//		//elasticity
+//
+//		if (lBody && rBody)
+//		{
+//			const Vector2 relativeVel = right.vel - left.vel;
+//			float impulse = (-(1 + e) * relativeVel.Dot(col.normal)) / totalMass;
+//			lBody->SetVelocity(left.vel  - (col.normal * left.mas  * impulse));
+//			rBody->SetVelocity(right.vel + (col.normal * right.mas * impulse));
+//		}
+//		else if (lBody)
+//		{
+//			const Vector2 relativeVel = left.vel * -1;
+//			float impulse = (-(1 + e) * relativeVel.Dot(col.normal)) / totalMass;
+//			lBody->SetVelocity(left.vel - (col.normal * left.mas * impulse));
+//		}
+//		else if (rBody)
+//		{
+//			const Vector2 relativeVel = right.vel * -1;
+//			float impulse = (-(1 + e) * relativeVel.Dot(col.normal)) / totalMass;
+//			rBody->SetVelocity(right.vel - (col.normal * right.mas * impulse));
+//		}
+//	}
+//}
 
 void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, Collision col)
 {
@@ -139,11 +219,10 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 			const Vector2 relativeVel = rBody->GetVelocity() * -1;
 			float impulse = (-(1 + e) * relativeVel.Dot(col.normal)) / totalMass;
 
-			rBody->SetVelocity(rBody->GetVelocity() - (col.normal * rBody->GetMass() * impulse));
+			rBody->SetVelocity(rBody->GetVelocity() - (col.normal * right.second * impulse));
 		}
-		return;
 	}
-	if (!rBody)
+	else if (!rBody)
 	{
 		const auto left  = std::make_pair(lBody->GetPosition(), lBody->GetMass());
 		const auto right = std::make_pair(r->getPosition(), .0f);
@@ -162,34 +241,35 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 			const Vector2 relativeVel = lBody->GetVelocity() * -1;
 			float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
 
-			lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
+			lBody->SetVelocity(lBody->GetVelocity() - (col.normal * left.second * impulse));
 		}
-		return;
 	}
-
-	const auto left  = std::make_pair(lBody->GetPosition(), lBody->GetMass());
-	const auto right = std::make_pair(rBody->GetPosition(), rBody->GetMass());
-
-	const float totalMass = left.second + right.second;
-	
-	if (totalMass)
+	else // both have rbodies
 	{
-		const Vector2 lPos = left.first;
-		const Vector2 rPos = right.first;
+		const auto left  = std::make_pair(lBody->GetPosition(), lBody->GetMass());
+		const auto right = std::make_pair(rBody->GetPosition(), rBody->GetMass());
 
-		Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
-		lBody->SetPosition(newPos);
-		l->updatePos(newPos + l->getOffset());
+		const float totalMass = left.second + right.second;
+	
+		if (totalMass)
+		{
+			const Vector2 lPos = left.first;
+			const Vector2 rPos = right.first;
+
+			Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
+			lBody->SetPosition(newPos);
+			l->updatePos(newPos + l->getOffset());
 		
-		newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
-		rBody->SetPosition(newPos);
-		r->updatePos(newPos + r->getOffset());
+			newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
+			rBody->SetPosition(newPos);
+			r->updatePos(newPos + r->getOffset());
 
-		const Vector2 relativeVel = rBody->GetVelocity() - lBody->GetVelocity();
-		float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
+			const Vector2 relativeVel = rBody->GetVelocity() - lBody->GetVelocity();
+			float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
 
-		lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
-		rBody->SetVelocity(rBody->GetVelocity() + (col.normal * rBody->GetMass() * impulse));
+			lBody->SetVelocity(lBody->GetVelocity() - (col.normal * left.second * impulse));
+			rBody->SetVelocity(rBody->GetVelocity() + (col.normal * right.second * impulse));
+		}
 	}
 }
 
@@ -280,44 +360,4 @@ Collision GameSimsPhysics::CircleRect(CollisionVolume* l, CollisionVolume* r)
 	const float dist = pow(left->getPosition().x - circpos.x, 2) + pow(left->getPosition().y - circpos.y, 2);
 
 	return { (circpos - left->getPosition()).Normalize(), float(left->getRadius() - std::sqrt(dist)) };
-}
-
-void GameSimsPhysics::Cleanup()
-{
-	std::vector<std::vector<RigidBody*>::iterator> rBToDelete;
-	std::vector<std::vector<CollisionVolume*>::iterator> colToDelete;
-
-	for (auto it = allBodies.begin(); it != allBodies.end(); ++it)
-	{
-		auto pos = (*it)->GetPosition() + ((*it)->collider ? (*it)->collider->getOffset() : Vector2(0,0));
-		constexpr int maxWidth = 30 * 16;
-		constexpr int maxHeight = 20 * 16;
-
-		if (pos.x < 0 || pos.y < 0 || pos.x > maxWidth || pos.y > maxHeight)
-		{
-			rBToDelete.push_back(it);
-			delete *it;
-		}
-	}
-	for (auto it = allColliders.begin(); it != allColliders.end(); ++it)
-	{
-		auto pos = (*it)->getPosition();
-		constexpr int maxWidth = 30 * 16;
-		constexpr int maxHeight = 20 * 16;
-
-		if (pos.x < 0 || pos.y < 0 || pos.x > maxWidth || pos.y > maxHeight)
-		{
-			colToDelete.push_back(it);
-			delete *it;
-		}
-	}
-
-	for (auto body : rBToDelete)
-	{
-		allBodies.erase(body);
-	}
-	for (auto collider : colToDelete)
-	{
-		allColliders.erase(collider);
-	}
 }

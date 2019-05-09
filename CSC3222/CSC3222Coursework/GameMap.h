@@ -26,14 +26,15 @@ namespace NCL
 			Flat,
 			Wall,
 			Rough,
-			MAX_TILES
+			MAX_TILES,
 		};
 
 		enum MapStructureType
 		{
 			RedTeleporter,
 			GreenTeleporter,
-			BlueTeleporter
+			BlueTeleporter,
+			RobotHome,
 		};
 
 		struct StructureData
@@ -56,7 +57,7 @@ namespace NCL
 			GameMap(const std::string& filename, std::vector<SimObject*>& objects, TextureManager& texManager, GameSimsPhysics* physics);
 			~GameMap();
 
-			void DrawMap(GameSimsRenderer & r);
+			void DrawMap(GameSimsRenderer& r);
 
 			int GetMapWidth() const
 			{
@@ -83,7 +84,7 @@ namespace NCL
 			StructureData*	structureData;
 			GameSimsPhysics* physics;
 
-			void GenerateColliders(GameSimsPhysics*);
+			void GenerateColliders(GameSimsPhysics*, MapTileType);
 		};
 	}
 }

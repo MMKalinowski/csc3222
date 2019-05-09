@@ -6,6 +6,7 @@
 #include "RectangleCollisionVolume.h"
 #include "../../Common/Assets.h"
 #include "../../Common/TextureLoader.h"
+
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -22,14 +23,14 @@ Vector4 GameMap::tileSpecs[MAX_TILES] = {
 };
 
 //Random rough looking tiles for variety
-Vector4 randomRoughTiles[4] = {
+static Vector4 randomRoughTiles[4] = {
 	Vector4(144,40,16,16),	//
 	Vector4(144,56,16,16),	//
 	Vector4(160,40,16,16),	//
 	Vector4(160,56,16,16),	//
 };
 
-Vector4 buildingTypes[4] = {
+static Vector4 buildingTypes[4] = {
 	Vector4(376,56,32,48),	//Red teleporter
 	Vector4(376,112,32,48), //blue teleporter
 	Vector4(376,168,32,48), //green teleporter
@@ -83,12 +84,35 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 		mapFile >> xTile;
 		mapFile >> yTile;
 
-		structureData[i].structureType = (MapStructureType)type;
+		structureData[i].structureType = (MapStructureType) type;
 		structureData[i].startPos.x = float(xTile * 16); //explicit type conversion
 		structureData[i].startPos.y = float(yTile * 16); //explicit type conversion
+
+		ColliderTag tag;
+		switch (type)
+		{
+			case MapStructureType::BlueTeleporter:
+				tag = ColliderTag::Blue;
+			case MapStructureType::RedTeleporter:
+				tag = ColliderTag::Red;
+			case MapStructureType::GreenTeleporter:
+				tag = ColliderTag::Green;
+			default:
+				tag = ColliderTag::Home;
+		}
+
+		Vector4 building = buildingTypes[type];
+		auto collider = new RectangleCollisionVolume(
+			structureData[i].startPos, { building.z / 2, building.w / 2 },
+			building.z, building.w, nullptr, tag
+		);
+
+		physics->AddCollider(collider);
+		wallColliders.push_back(collider);
 	}
 
-	GenerateColliders(physics);
+	GenerateColliders(physics, MapTileType::Wall);
+	GenerateColliders(physics, MapTileType::Rough);
 }
 
 GameMap::~GameMap()
@@ -144,7 +168,7 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 
 		Vector2 screenPos = structureData[i].startPos;
 
-		r.DrawTextureArea((OGLTexture*)tileTexture, texPos, texSize, screenPos, false);
+		r.DrawTextureArea((OGLTexture*) tileTexture, texPos, texSize, screenPos, false);
 	}
 }
 
@@ -190,26 +214,39 @@ void makeAreaUsed(std::vector<int>& used, const Rect& area, int mapWidth)
 	}
 }
 
-void GameMap::GenerateColliders(GameSimsPhysics* physicsLoc)
+void GameMap::GenerateColliders(GameSimsPhysics* physicsLoc, MapTileType type)
 {
 	const int size = mapWidth * mapHeight;
 	std::vector<int> used(size);
 	std::fill(used.begin(), used.end(), 0);
+
+	ColliderTag tag;
+
+	switch (type)
+	{
+		case MapTileType::Wall:
+			tag = ColliderTag::Terrain;
+			break;
+		
+		case MapTileType::Rough:
+			tag = ColliderTag::Slowdown;
+			break;
+	}
 
 	for (int y = 0; y < mapHeight; ++y)
 	{
 		for (int x = 0; x < mapWidth; ++x)
 		{
 			const int index = x + y * mapWidth;
-			if (!used[index] && mapData[index] == MapTileType::Wall)
+			if (!used[index] && mapData[index] == type)
 			{
-				Rect r = makeRectAt(x, y, MapTileType::Wall, used);
+				Rect r = makeRectAt(x, y, type, used);
 				if (r.h && r.w)
 				{
 					makeAreaUsed(used, r, mapWidth);
 					auto collider = new RectangleCollisionVolume(
 						Vector2(r.x * 16, r.y * 16), Vector2(r.w * 8, r.h * 8),
-						r.w * 16, r.h * 16, nullptr, ColliderTag::Terrain
+						r.w * 16, r.h * 16, nullptr, tag
 					);
 					physicsLoc->AddCollider(collider);
 					wallColliders.push_back(collider);
