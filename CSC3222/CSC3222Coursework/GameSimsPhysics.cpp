@@ -27,9 +27,9 @@ void GameSimsPhysics::Update(const float dt)
 		IntegrateAccel(dt);
 		CollisionDetection(dt);
 		IntegrateVel(dt);
+		//Cleanup();
 		
 		timeUntilUpdate -= subDT;
-		//std::cout << allColliders.size() << std::endl;
 	}
 	
 }
@@ -111,7 +111,7 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 	RigidBody* const lBody = l->getRigidBody();
 	RigidBody* const rBody = r->getRigidBody();
 
-	float e = 1.f;
+	float e = .9f;
 
 	if (!lBody && !rBody)
 	{
@@ -280,4 +280,44 @@ Collision GameSimsPhysics::CircleRect(CollisionVolume* l, CollisionVolume* r)
 	const float dist = pow(left->getPosition().x - circpos.x, 2) + pow(left->getPosition().y - circpos.y, 2);
 
 	return { (circpos - left->getPosition()).Normalize(), float(left->getRadius() - std::sqrt(dist)) };
+}
+
+void GameSimsPhysics::Cleanup()
+{
+	std::vector<std::vector<RigidBody*>::iterator> rBToDelete;
+	std::vector<std::vector<CollisionVolume*>::iterator> colToDelete;
+
+	for (auto it = allBodies.begin(); it != allBodies.end(); ++it)
+	{
+		auto pos = (*it)->GetPosition() + ((*it)->collider ? (*it)->collider->getOffset() : Vector2(0,0));
+		constexpr int maxWidth = 30 * 16;
+		constexpr int maxHeight = 20 * 16;
+
+		if (pos.x < 0 || pos.y < 0 || pos.x > maxWidth || pos.y > maxHeight)
+		{
+			rBToDelete.push_back(it);
+			delete *it;
+		}
+	}
+	for (auto it = allColliders.begin(); it != allColliders.end(); ++it)
+	{
+		auto pos = (*it)->getPosition();
+		constexpr int maxWidth = 30 * 16;
+		constexpr int maxHeight = 20 * 16;
+
+		if (pos.x < 0 || pos.y < 0 || pos.x > maxWidth || pos.y > maxHeight)
+		{
+			colToDelete.push_back(it);
+			delete *it;
+		}
+	}
+
+	for (auto body : rBToDelete)
+	{
+		allBodies.erase(body);
+	}
+	for (auto collider : colToDelete)
+	{
+		allColliders.erase(collider);
+	}
 }

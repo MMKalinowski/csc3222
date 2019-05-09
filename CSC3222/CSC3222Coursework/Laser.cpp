@@ -43,8 +43,8 @@ Laser::Laser(Vector2& direction) : SimObject()
 
 	this->SetCollider(new CircleCollisionVolume(position, { 0, 0 }, 3, this));
 
-	inverseMass = 1.f / float(rand() % 5 + 1); //randomisation for physics test
-	//inverseMass = 1.0f;
+	//inverseMass = 1.f / float(rand() % 5 + 1); //randomisation for physics test
+	inverseMass = 100;
 	this->AddForce(dir * SPEED / inverseMass);
 }
 
@@ -81,6 +81,13 @@ bool Laser::UpdateObject(const float dt)
 	
 	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
 	this->SetPosition(nextPosition);*/
+
+	float speed = this->GetVelocity().Length();
+	if (speed != SPEED)
+	{
+		Vector2 newVel = this->GetVelocity().Normalize();
+		this->SetVelocity(newVel * speed);
+	}
 
 	return true;
 }

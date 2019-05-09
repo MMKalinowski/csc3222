@@ -91,7 +91,7 @@ void RobotRescueGame::Update(const float dt)
 
 	for (auto i = gameObjects.begin(); i != gameObjects.end(); )
 	{
-		if (!(*i)->UpdateObject(dt))
+		if (*i && !(*i)->UpdateObject(dt))
 		{ //object has said its finished with
 			delete (*i);
 			i = gameObjects.erase(i);
@@ -155,8 +155,8 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 
 	robot->SetPosition(position);
 	Vector2 offset = { 8,24 };
-	//robot->SetCollider(new CircleCollisionVolume(position, Vector2(8, 24), 8));
-	robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
+	robot->SetCollider(new CircleCollisionVolume(position, Vector2(8, 24), 8));
+	//robot->SetCollider(new RectangleCollisionVolume(position, offset, 16, 16));
 	robot->GetCollider()->setTag(ColliderTag::Enemy);
 
 	AddNewObject(robot);

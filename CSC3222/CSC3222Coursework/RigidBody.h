@@ -62,10 +62,10 @@ namespace NCL
 				this->inverseMass = invMass;
 			}
 
-			float GetElasticity()
+			/*float GetElasticity()
 			{
 				return elasticity;
-			}
+			}*/
 
 			protected:
 			Vector2 position;
@@ -73,7 +73,7 @@ namespace NCL
 			Vector2 force;
 
 			float inverseMass;
-			float elasticity;
+			//float elasticity;
 
 			CollisionVolume* collider;
 		};
