@@ -209,7 +209,7 @@ void GameMap::GenerateColliders(GameSimsPhysics* physicsLoc)
 					makeAreaUsed(used, r, mapWidth);
 					auto collider = new RectangleCollisionVolume(
 						Vector2(r.x * 16, r.y * 16), Vector2(r.w * 8, r.h * 8),
-						(r.w + 1) * 16, (r.h + 1) * 16, nullptr, ColliderTag::Terrain
+						r.w * 16, r.h * 16, nullptr, ColliderTag::Terrain
 					);
 					physicsLoc->AddCollider(collider);
 					wallColliders.push_back(collider);
