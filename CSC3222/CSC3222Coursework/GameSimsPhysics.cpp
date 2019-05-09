@@ -115,8 +115,66 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 	{
 		return;
 	}
-	if (!lBody || !rBody)
+	if (!lBody)
 	{
+		const auto left = std::make_pair(l->getPosition(), .0f);
+		const auto right = std::make_pair(rBody->GetPosition(), rBody->GetMass());
+
+		const float totalMass = left.second + right.second;
+
+		if (totalMass)
+		{
+			const Vector2 lPos = left.first;
+			const Vector2 rPos = right.first;
+
+			//Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
+			/*lBody->SetPosition(newPos);
+			l->updatePos(newPos + l->getOffset());*/
+
+			Vector2 newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
+			rBody->SetPosition(newPos);
+			r->updatePos(newPos + r->getOffset());
+
+			//elasticity
+			float e = .9f;
+
+			const Vector2 relativeVel = rBody->GetVelocity() * -1;// -lBody->GetVelocity();
+			float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
+
+			//lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
+			rBody->SetVelocity(rBody->GetVelocity() + (col.normal * rBody->GetMass() * impulse));
+		}
+		return;
+	}
+	if(!rBody)
+	{
+		const auto left = std::make_pair(lBody->GetPosition(), lBody->GetMass());
+		const auto right = std::make_pair(r->getPosition(), .0f);
+
+		const float totalMass = left.second + right.second;
+
+		if (totalMass)
+		{
+			const Vector2 lPos = left.first;
+			const Vector2 rPos = right.first;
+
+			Vector2 newPos = lPos + (col.normal * col.penetration * (left.second / totalMass));
+			lBody->SetPosition(newPos);
+			l->updatePos(newPos + l->getOffset());
+
+			/*newPos = rPos - (col.normal * col.penetration * (right.second / totalMass));
+			rBody->SetPosition(newPos);
+			r->updatePos(newPos + r->getOffset());*/
+
+			//elasticity
+			float e = .9f;
+
+			const Vector2 relativeVel = lBody->GetVelocity() * -1;
+			float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
+
+			lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
+			//rBody->SetVelocity(rBody->GetVelocity() + (col.normal * rBody->GetMass() * impulse));
+		}
 		return;
 	}
 
@@ -142,7 +200,7 @@ void GameSimsPhysics::ResolveCollision(CollisionVolume* l, CollisionVolume* r, C
 		float e = .9f;
 
 		const Vector2 relativeVel = rBody->GetVelocity() - lBody->GetVelocity();
-		float impulse = (-1*(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
+		float impulse = (-(1 + e) * (relativeVel.Dot(col.normal))) / totalMass;
 
 		lBody->SetVelocity(lBody->GetVelocity() - (col.normal * lBody->GetMass() * impulse));
 		rBody->SetVelocity(rBody->GetVelocity() + (col.normal * rBody->GetMass() * impulse));

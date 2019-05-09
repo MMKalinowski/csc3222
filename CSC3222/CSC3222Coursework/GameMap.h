@@ -42,6 +42,14 @@ namespace NCL
 			MapStructureType	structureType;
 		};
 
+		struct Rect
+		{
+			int x;
+			int y;
+			int w;
+			int h;
+		};
+
 		class GameMap
 		{
 			public:
@@ -60,6 +68,9 @@ namespace NCL
 				return mapHeight;
 			}
 
+			private:
+			Rect makeRectAt(int sx, int sy, MapTileType, std::vector<int>& used) const;
+			
 			protected:
 			int mapWidth;
 			int mapHeight;

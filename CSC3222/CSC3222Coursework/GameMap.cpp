@@ -8,6 +8,7 @@
 #include "../../Common/TextureLoader.h"
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 using namespace NCL;
 using namespace CSC3222;
@@ -35,6 +36,8 @@ Vector4 buildingTypes[4] = {
 	Vector4(144,256,64,64)  //Robot Home
 };
 
+
+static std::vector<RectangleCollisionVolume*> wallColliders;
 
 GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, TextureManager& texManager, GameSimsPhysics* physics)
 {
@@ -64,24 +67,8 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 			mapFile >> type;
 
 			mapData[tileIndex] = (MapTileType)(type - 48);
-			
-			if (mapData[tileIndex] == -1)
-			{
-				physics->AddCollider(new RectangleCollisionVolume(
-					Vector2(x*16,y*16),
-					Vector2(8,8),
-					16,
-					16)
-				);
-			}
 		}
 	}
-	physics->AddCollider(new RectangleCollisionVolume(
-		Vector2(0, 0),
-		Vector2(16*15, 8),
-		16 * 30,
-		16)
-	);
 	mapFile >> structureCount;
 
 	structureData = new StructureData[structureCount];
@@ -140,12 +127,12 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 			Vector2 screenPos = Vector2(float(x * 16), float(y * 16)); //explicit type conversion
 
 			r.DrawTextureArea((OGLTexture*)tileTexture, texPos, texSize, screenPos, false);
-
-			if (tileType == 1)
-			{
-				r.DrawBox(screenPos + Vector2(8, 8), Vector2(8, 8));
-			}
 		}
+	}
+
+	for (RectangleCollisionVolume* rcv : wallColliders)
+	{
+		r.DrawBox(rcv->getPosition(), rcv->getOffset());
 	}
 
 	for (int i = 0; i < structureCount; ++i)
@@ -161,55 +148,74 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 	}
 }
 
+Rect GameMap::makeRectAt(int sx, int sy, MapTileType type, std::vector<int>& used) const
+{
+	Rect rect = {sx, sy, mapWidth - sx, 1};
+	for (int y = sy; y < mapHeight; ++y)
+	{
+		if (used[sx + y * mapWidth] || mapData[sx + y * mapWidth] != type)
+		{
+			rect.h = y - sy;
+			break;
+		}
+		for (int x = sx; x < sx + rect.w; ++x)
+		{
+			const int index = x + y * mapWidth;
+			const bool isUsed = used[index];
+			const bool isType = mapData[index] == type;
+			if (isUsed || !isType)
+			{
+				rect.w = min(rect.w, x - sx);
+				rect.h = y - sy;
+				break;
+			}
+		}
+		if (y == mapHeight - 1)
+		{
+			rect.h = y - sy + 1;
+		}
+	}
+	return rect;
+}
+
+void makeAreaUsed(std::vector<int>& used, const Rect& area, int mapWidth)
+{
+	for (int y = area.y; y < area.y + area.h; ++y)
+	{
+		for (int x = area.x; x < area.x + area.w; ++x)
+		{
+			const int index = x + y * mapWidth;
+			used[index] = 1;
+		}
+	}
+}
+
 void GameMap::GenerateColliders(GameSimsPhysics* physicsLoc)
 {
-	Vector2 startingPoint = Vector2(0, 0);
-	int prevX = 0;
-	int prevY = 0;
-	int currentX = 0;
-	int currentY = 0;
-	int prevType = mapData[0];
-	int currentType = 0;
-	ColliderTag tag = ColliderTag::Free;
+	const int size = mapWidth * mapHeight;
+	std::vector<int> used(size);
+	std::fill(used.begin(), used.end(), 0);
 
 	for (int y = 0; y < mapHeight; ++y)
 	{
 		for (int x = 0; x < mapWidth; ++x)
 		{
-			currentX = x;
-			currentY = y;
-			int tileIndex = (y * mapWidth);
-			currentType = mapData[tileIndex + x];
-
-			if (prevType != currentType || currentX+1 >= mapWidth)
+			const int index = x + y * mapWidth;
+			if (!used[index] && mapData[index] == MapTileType::Wall)
 			{
-				if (!prevType == MapTileType::Flat)
+				Rect r = makeRectAt(x, y, MapTileType::Wall, used);
+				if (r.h && r.w)
 				{
-					switch (prevType)
-					{
-						case MapTileType::Wall:
-							tag = ColliderTag::Terrain;
-							break;
-						case MapTileType::Rough:
-							tag = ColliderTag::Slowdown;
-							break;
-						default:
-							tag = ColliderTag::Free;
-							break;
-					}
-
-					physicsLoc->AddCollider(new RectangleCollisionVolume(
-						startingPoint, Vector2( float(currentX * 8), float(currentY * 8) ),
-						(currentX + 1) * 16, (currentY + 1) * 16, nullptr, tag
-					));
-
-					startingPoint = Vector2(float(currentX * 16), float(currentY * 16));
+					makeAreaUsed(used, r, mapWidth);
+					auto collider = new RectangleCollisionVolume(
+						Vector2(r.x * 16, r.y * 16), Vector2(r.w * 8, r.h * 8),
+						(r.w + 1) * 16, (r.h + 1) * 16, nullptr, ColliderTag::Terrain
+					);
+					physicsLoc->AddCollider(collider);
+					wallColliders.push_back(collider);
 				}
 			}
-
-			prevX = currentX;
-			prevY = currentY;
-			prevType = currentType;
 		}
 	}
+	std::cout << "Wall colliders: " << wallColliders.size() << std::endl;
 }
