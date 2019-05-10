@@ -158,6 +158,7 @@ void RobotRescueGame::AddEnemyRobot(const Vector2& position)
 	Vector2 offset = { 8,24 };
 	robot->SetCollider(new CircleCollisionVolume(position, Vector2(8, 24), 8));
 	robot->GetCollider()->setTag(ColliderTag::Enemy);
+	robot->addPlayer(testRobot->GetCollider());
 
 	AddNewObject(robot);
 }
