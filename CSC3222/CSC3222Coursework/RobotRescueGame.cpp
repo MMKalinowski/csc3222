@@ -10,6 +10,7 @@
 #include "CollectableRobot.h"
 #include "CircleCollisionVolume.h"
 #include "RectangleCollisionVolume.h"
+#include "CollisionManager.h"
 
 #include "../../Common/Window.h"
 #include "../../Common/TextureLoader.h"
@@ -27,8 +28,11 @@ RobotRescueGame::RobotRescueGame()
 	renderer = new GameSimsRenderer();
 	texManager = new TextureManager();
 	physics = new GameSimsPhysics();
+
 	SimObject::InitObjects(this, texManager);
 	InitialiseGame();
+	collisionManager = new CollisionManager(this, currentMap);
+	physics->SetCollisionManager(collisionManager);
 }
 
 RobotRescueGame::~RobotRescueGame()
@@ -37,6 +41,7 @@ RobotRescueGame::~RobotRescueGame()
 	delete texManager;
 	delete renderer;
 	delete physics;
+	delete collisionManager;
 }
 
 void RobotRescueGame::Update(const float dt)
@@ -53,7 +58,6 @@ void RobotRescueGame::Update(const float dt)
 
 	if (enemyRobotSpawn && robotCount < maxEnemies)
 	{
-		//std::cout << "t: " + std::to_string(gameTime) << std::endl;
 		float spawnX = MAX_X - 5.0f + 0;
 		float spawnY = MAX_Y - 5.0f + 0;
 
@@ -67,13 +71,6 @@ void RobotRescueGame::Update(const float dt)
 		enemyRobotSpawn = !enemyRobotSpawn;
 	}
 	//END
-
-	/*float spawnX = MAX_X - 5.0f + 0;
-	float spawnY = MAX_Y - 5.0f + 0;
-	
-	if(!yes)
-		AddEnemyRobot(Vector2(spawnX, spawnY));
-	yes = true;*/
 
 	for (auto i : newObjects)
 	{

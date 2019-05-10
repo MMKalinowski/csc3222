@@ -34,7 +34,7 @@ namespace NCL
 			RedTeleporter,
 			GreenTeleporter,
 			BlueTeleporter,
-			RobotHome,
+			//RobotHome,
 		};
 
 		struct StructureData
@@ -67,6 +67,33 @@ namespace NCL
 			int GetMapHeight() const
 			{
 				return mapHeight;
+			}
+
+			Vector2 teleportTo(MapStructureType type)
+			{
+				int i = 0;
+				while (i < structureCount)
+				{
+					if (structureData[i].structureType == type)
+					{
+						Vector2 offset = {0,0};
+						switch (type)
+						{
+							case MapStructureType::BlueTeleporter:
+								offset = Vector2(-2 * 16, 16);
+								break;
+							case MapStructureType::RedTeleporter:
+								offset = Vector2(2 * 16, 5 * 16);
+								break;
+							case MapStructureType::GreenTeleporter:
+								offset = Vector2(3 * 16, -1 * 16);
+								break;
+						}
+						return structureData[i].startPos + offset;
+					}
+					++i;
+				}
+				return Vector2(-20, -20);
 			}
 
 			private:

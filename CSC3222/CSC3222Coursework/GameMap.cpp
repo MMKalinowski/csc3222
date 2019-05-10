@@ -93,14 +93,18 @@ GameMap::GameMap(const std::string& filename, std::vector<SimObject*>& objects, 
 		{
 			case MapStructureType::BlueTeleporter:
 				tag = ColliderTag::Blue;
+				break;
 			case MapStructureType::RedTeleporter:
 				tag = ColliderTag::Red;
+				break;
 			case MapStructureType::GreenTeleporter:
 				tag = ColliderTag::Green;
+				break;
 			default:
 				tag = ColliderTag::Home;
+				break;
 		}
-
+		
 		Vector4 building = buildingTypes[type];
 		auto collider = new RectangleCollisionVolume(
 			structureData[i].startPos, { building.z / 2, building.w / 2 },

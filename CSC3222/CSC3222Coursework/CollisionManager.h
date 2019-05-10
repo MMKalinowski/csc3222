@@ -1,7 +1,7 @@
 #pragma once
 #include "CollisionVolume.h"
-#include "GameSimsPhysics.h"
 #include "RobotRescueGame.h"
+#include "GameMap.h"
 
 #include "../../Common/Vector2.h"
 
@@ -9,11 +9,15 @@ namespace NCL
 {
 	namespace CSC3222
 	{
+		class RobotRescueGame;
+		struct Collision;
+
 		class CollisionManager
 		{
 			public:
-			CollisionManager(GameSimsPhysics* phys)
-			:physics(phys)
+			CollisionManager(RobotRescueGame* game, GameMap* map)
+			: game(game)
+			, map(map)
 			{}
 
 			~CollisionManager() {}
@@ -21,8 +25,8 @@ namespace NCL
 			bool shouldCollide(CollisionVolume*, CollisionVolume*, Collision);
 
 			private:
-			GameSimsPhysics* physics;
 			RobotRescueGame* game;
+			GameMap* map;
 		};
 	}
 }

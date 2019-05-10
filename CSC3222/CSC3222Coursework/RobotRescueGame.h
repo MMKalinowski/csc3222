@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "CollisionManager.h"
 
 
 namespace NCL
@@ -17,6 +18,7 @@ namespace NCL
 		class TextureBase;
 		class PlayerRobot;
 		class TextureManager;
+		class CollisionManager;
 
 		const static unsigned int MAX_X = 416;
 		const static unsigned int MAX_Y = 256;
@@ -43,6 +45,7 @@ namespace NCL
 			GameSimsRenderer*	renderer;
 			GameSimsPhysics*	physics;
 			GameMap* currentMap;
+			CollisionManager* collisionManager;
 
 			PlayerRobot* testRobot;
 

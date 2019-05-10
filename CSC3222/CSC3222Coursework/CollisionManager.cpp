@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+
 using namespace NCL::CSC3222;
 
 static CollisionVolume* isEither(CollisionVolume* l, CollisionVolume* r, ColliderTag t)
@@ -31,10 +32,62 @@ bool CollisionManager::shouldCollide(CollisionVolume* l, CollisionVolume* r, Col
 		if (enemy)
 		{
 			enemy->getRigidBody();
+			return true;
 		}
 	}
 
-	//anything red -> blue exit
+	if (isEither(l, r, ColliderTag::Slowdown))
+	{
+		return false;
+	}
+
+	CollisionVolume* red = isEither(l, r, ColliderTag::Red);
+
+	if (red)
+	{
+		CollisionVolume* notRed = l == red ? r : l;
+		Vector2 tepPos = map->teleportTo(MapStructureType::BlueTeleporter);
+		RigidBody* rb =  notRed->getRigidBody();
+
+		if (rb)
+		{
+			rb->SetPosition(tepPos);
+		}
+		notRed->updatePos(tepPos + notRed->getOffset());
+		return false;
+	}
+
+	CollisionVolume* blue = isEither(l, r, ColliderTag::Blue);
+
+	if (blue)
+	{
+		CollisionVolume* notBlue = l == blue ? r : l;
+		Vector2 tepPos = map->teleportTo(MapStructureType::GreenTeleporter);
+		RigidBody* rb = notBlue->getRigidBody();
+
+		if (rb)
+		{
+			rb->SetPosition(tepPos);
+		}
+		notBlue->updatePos(tepPos + notBlue->getOffset());
+		return false;
+	}
+
+	CollisionVolume* green = isEither(l, r, ColliderTag::Green);
+
+	if (green)
+	{
+		CollisionVolume* notGreen = l == green ? r : l;
+		Vector2 tepPos = map->teleportTo(MapStructureType::RedTeleporter);
+		RigidBody* rb = notGreen->getRigidBody();
+
+		if (rb)
+		{
+			rb->SetPosition(tepPos);
+		}
+		notGreen->updatePos(tepPos + notGreen->getOffset());
+		return false;
+	}
 	//anything blue -> green exit
 	//anything green -> red exit
 	//collectible player -> picked up collectible

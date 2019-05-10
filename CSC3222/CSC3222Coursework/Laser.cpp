@@ -42,6 +42,7 @@ Laser::Laser(Vector2& direction) : SimObject()
 	dir = velocity;
 
 	this->SetCollider(new CircleCollisionVolume(position, { 0, 0 }, 3, this));
+	collider->setTag(ColliderTag::Bullet);
 
 	//inverseMass = 1.f / float(rand() % 5 + 1); //randomisation for physics test
 	inverseMass = 100;
@@ -76,11 +77,6 @@ void Laser::DrawObject(GameSimsRenderer &r)
 
 bool Laser::UpdateObject(const float dt)
 {
-	/*Vector2 currentVel = this->GetVelocity();
-	currentVel = (currentVel.x != 0 || currentVel.y != 0) ? currentVel : Vector2{1.0f, .0f};
-	
-	Vector2 nextPosition = this->GetPosition() + (currentVel * SPEED * dt);
-	this->SetPosition(nextPosition);*/
 
 	float speed = this->GetVelocity().Length();
 	if (speed != SPEED)
@@ -90,5 +86,4 @@ bool Laser::UpdateObject(const float dt)
 	}
 
 	return position.x >= 0 && position.y >= 0 && position.x < 30 * 16 && position.y < 20 * 16;
-	//return true;
 }

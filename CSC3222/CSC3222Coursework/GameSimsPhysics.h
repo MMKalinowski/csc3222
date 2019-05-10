@@ -2,6 +2,7 @@
 #include <vector>
 #include "CircleCollisionVolume.h"
 #include "RectangleCollisionVolume.h"
+#include "CollisionManager.h"
 #include "../../Common/Vector2.h"
 #include "../../Common/Maths.h"
 
@@ -11,6 +12,7 @@ namespace NCL
 	{
 		class RigidBody;
 		class CollisionVolume;
+		class CollisionManager;
 
 		struct Collision
 		{
@@ -33,6 +35,8 @@ namespace NCL
 			void AddCollider(CollisionVolume* c);
 			void RemoveCollider(CollisionVolume* c);
 
+			void SetCollisionManager(CollisionManager* col) { this->manager = col; }
+
 			protected:
 			void IntegrateAccel(const float dt);
 			void IntegrateVel(const float dt);
@@ -51,6 +55,8 @@ namespace NCL
 			const float subDT = 1.0f / 120.f;
 			std::vector<RigidBody*>			allBodies;
 			std::vector<CollisionVolume*>	allColliders;
+
+			CollisionManager* manager;
 
 			//float clamp(const float val, const float minv, const float maxv) { return max(minv, min(val, maxv)); }
 			/*
