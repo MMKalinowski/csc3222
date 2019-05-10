@@ -72,7 +72,7 @@ void Laser::DrawObject(GameSimsRenderer &r)
 	this->GetCollider()->setOffset(texSize / 2.f);
 
 	r.DrawTextureArea(reinterpret_cast<OGLTexture*>(texture), texPos, texSize, screenPos);
-	r.DrawCircle(this->GetCollider()->getPosition(), 3);
+	//r.DrawCircle(this->GetCollider()->getPosition(), 3);
 }
 
 bool Laser::UpdateObject(const float dt)

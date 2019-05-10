@@ -41,7 +41,7 @@ namespace NCL
 			void IntegrateAccel(const float dt);
 			void IntegrateVel(const float dt);
 
-			void Cleanup();
+			//void Cleanup();
 			
 			void CollisionDetection(const float dt);
 			Collision CheckCollision(CollisionVolume* l, CollisionVolume* r);

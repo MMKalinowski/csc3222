@@ -128,7 +128,7 @@ void RobotRescueGame::InitialiseGame()
 	testRobot = new PlayerRobot();
 	AddNewObject(testRobot);
 
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
 		float randomX = 32.0f + (rand() % MAX_X);
 		float randomY = 32.0f + (rand() % MAX_Y);

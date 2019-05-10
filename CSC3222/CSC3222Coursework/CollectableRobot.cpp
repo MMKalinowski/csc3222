@@ -54,8 +54,7 @@ void CollectableRobot::DrawObject(GameSimsRenderer &r)
 	Vector2 screenPos = position;
 
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, false);
-	//r.DrawCircle(screenPos + this->GetCollider()->getOffset(), 8);
-	r.DrawCircle(this->GetCollider()->getPosition(), 8);
+	//r.DrawCircle(this->GetCollider()->getPosition(), 8);
 }
 
 bool CollectableRobot::UpdateObject(float dt)

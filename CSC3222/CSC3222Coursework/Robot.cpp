@@ -37,7 +37,7 @@ void Robot::DrawObject(GameSimsRenderer &r)
 
 	r.DrawTextureArea((OGLTexture*)texture, texPos, texSize, screenPos, flips[currentAnimDir]);
 	
-	if(this->collider->getType() == 2)
+	/*if(this->collider->getType() == 2)
 		r.DrawCircle(this->collider->getPosition(), 7);
 	else
 	{
@@ -45,7 +45,7 @@ void Robot::DrawObject(GameSimsRenderer &r)
 		r.DrawBox(
 			this->collider->getPosition(),
 			Vector2(rcv->getX_Size() / 2, rcv->getY_Size() / 2));
-	}
+	}*/
 }
 
 void Robot::UpdateAnimFrame(float dt)

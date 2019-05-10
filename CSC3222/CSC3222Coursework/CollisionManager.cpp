@@ -26,18 +26,9 @@ bool CollisionManager::shouldCollide(CollisionVolume* l, CollisionVolume* r, Col
 		return !(tagLeft == ColliderTag::Bullet || tagLeft == ColliderTag::Collectible);
 	}
 
-	if (isEither(l, r, ColliderTag::Bullet))
-	{
-		CollisionVolume* enemy = isEither(l, r, ColliderTag::Enemy);
-		if (enemy)
-		{
-			enemy->getRigidBody();
-			return true;
-		}
-	}
-
 	if (isEither(l, r, ColliderTag::Slowdown))
 	{
+		//slow player || enemy by 30%
 		return false;
 	}
 
@@ -88,8 +79,27 @@ bool CollisionManager::shouldCollide(CollisionVolume* l, CollisionVolume* r, Col
 		notGreen->updatePos(tepPos + notGreen->getOffset());
 		return false;
 	}
-	//anything blue -> green exit
-	//anything green -> red exit
+
+	/*if (isEither(l, r, ColliderTag::Collectible))
+	{
+		CollisionVolume* enemy = isEither(l, r, ColliderTag::Enemy);
+		if (enemy)
+		{
+			enemy->getRigidBody();
+			return false;
+		}
+
+		CollisionVolume* bullet = isEither(l, r, ColliderTag::Bullet);
+		if (bullet)
+		{
+			bullet->getRigidBody();
+			return false;
+		}
+
+		return true;
+	}*/
+
+
 	//collectible player -> picked up collectible
 	//player home -> if has collectible, delete collectible, player collides
 	//player (bullet || enemy) -> delete bullet, stun enemy, player loses life

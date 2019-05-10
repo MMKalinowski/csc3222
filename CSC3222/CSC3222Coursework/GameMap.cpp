@@ -158,10 +158,10 @@ void GameMap::DrawMap(GameSimsRenderer & r)
 		}
 	}
 
-	for (RectangleCollisionVolume* rcv : wallColliders)
+	/*for (RectangleCollisionVolume* rcv : wallColliders)
 	{
 		r.DrawBox(rcv->getPosition(), rcv->getOffset());
-	}
+	}*/
 
 	for (int i = 0; i < structureCount; ++i)
 	{
